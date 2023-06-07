@@ -1,0 +1,124 @@
+---
+title: "S4_objects"
+author: "tkik"
+date: "2023-06-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+S4 classes are the perfect examples of the OO programming:
+- stricter structure
+- they have representations: a list of slots or arguments by name and class
+- the slots have to have the correct type
+- methods - they also inherit the methods from the classes of the arguments, but inheritence is between S4 classes as well. 
+- has to be created with the new constructor
+- they have accessor methods as well.
+
+```{r}
+setClass("Person", representation(name = "character", age = "numeric"))
+setClass("Employee", representation(boss = "Person"), contains = "Person")
+
+person1 <- new("Person", name="Peter", age=34)
+boss1 <- new("Employee", boss=person1, name="Lisa", age=36)
+```
+
+```{r}
+
+person1
+boss1
+
+```
+
+Example class: SummarizedExperiment
+
+    ```{r, echo = FALSE, out.width = "70%"}
+    knitr::include_graphics("https://compgenomr.github.io/book/images/Summarized.Experiment.png", dpi = 100)
+    ```
+
+
+Representation:
+
+
+`RangedSummarizedExperiment` is an extension of `SummarizedExperiment`. It uses `GRanges` to define the genomic regions. 
+
+
+```{r}
+library(SummarizedExperiment)
+library(airway)
+data("airway")
+
+se <- airway
+
+```
+## Accessors
+
+To know all this, look for the help and the vignette. 
+
+```{r}
+colData(se)
+rowData(se)
+#assay(se)
+rowRanges(se)
+#assays(se)[[1]]
+head(assays(se)$counts)
+
+head(metadata(airway))
+
+```
+
+You can access each data "natively", and even change it, but you shouldn't do that. 
+Why? It is easy to screw it up...
+
+
+```{r}
+se@rowRanges
+se@metadata
+
+###don't do this:
+se@rowRanges <- se@rowRanges[1:3000]
+se
+se@rowRanges
+
+
+```
+
+## Methods 
+
+### subsetting
+
+
+```{r}
+# subsetting is very easy, just like with a data.frame
+
+se <- se[1:2000,]
+
+se <- se[,1:3]
+
+se
+
+```
+
+### Combining
+
+```{r}
+
+rowbinded <- rbind(se, se)
+rowbinded
+colbinded <- cbind(se, se)
+colbinded
+
+```
+```{r}
+roi <- GRanges(seqnames="X", ranges=99800000:99850000)
+se_1 <- subsetByOverlaps(se, roi)
+
+
+
+```
+

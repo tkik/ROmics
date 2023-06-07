@@ -8,4 +8,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+
+# Omics analysis with R
+
+## Day 1
+
+[Reproducible programming]("GRanges.html")
+[S4 objects]("S4_objects.html")
+[rtracklayer]("rtracklayer.html")
+[GRanges]("GRanges.html")
+[references]("references.html")
+[resources]("resources.html")
+
+
+
+
+
+
