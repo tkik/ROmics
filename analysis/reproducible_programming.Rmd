@@ -109,4 +109,6 @@ wflow_use_github("tkik", repository="ROmics", create_on_github = T)
 
 - create a new markdown file in the analysis folder, my_first_project
 
+- Clone the tkik/ROmics repository
+
 

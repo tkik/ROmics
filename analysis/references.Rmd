@@ -1,0 +1,24 @@
+---
+title: "References"
+author: "tkik"
+date: "`r Sys.Date()`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+# Resources used in the course
+
+
+The following resources were used to prepare the slides and exercises:  
+
+[LINK](https://bookdown.org/rdpeng/rprogdatascience/)
+
+[LINK](https://r4ds.had.co.nz/)
+
+[LINK](https://adv-r.hadley.nz/)
+
+[LINK](https://www.r-exercises.com/start-here-to-learn-r/)
+
+[LINK](https://www.r-exercises.com/start-here-to-learn-r/)
+
+[LINK](https://compgenomr.github.io/book/)

@@ -1,0 +1,110 @@
+---
+title: "Resources"
+author: "tkik"
+date: "`r Sys.Date()`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Useful packages:
+
+
+## Clean up code 
+
+`formatR`
+
+## Update R
+
+`updateR`
+
+## Interactive visualization:
+
+`plotly`
+`ggplotly`
+`Glimma`
+
+## nice tables in Rmarkdown
+
+`DT` 
+
+## Enrichment analysis 
+
+`clusterProfiler`
+
+## Annotation of genomic regions
+
+`annotatr`
+
+## Gene expression (RNASeq) analysis 
+
+`DESeq2`
+`EdgeR`
+
+## Mutation data
+
+`MAFtools`
+
+## Visualization genomic regions
+
+`Gviz`
+
+## Handling genomic data (e.g. bam files)
+
+`rtracklayer`
+
+## Methylation data
+
+### Array
+
+`minfi`
+`RnBeads`
+
+### Sequencing
+
+`methrix`
+`bsseq`
+
+## Visualization, heatmaps
+
+`pheatmap`
+`Complexheatmap`
+
+## Circular plots 
+
+`circlize`
+
+## Upset plot
+
+`upsetR`
+
+## Alluvial plot
+
+`ggalluvial`
+
+## Nice colors palettes
+
+`ggsci`
+`scico`
+
+[All color palettes](https://github.com/EmilHvitfeldt/r-color-palettes)
+
+## Cheatsheets
+
+[Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
+
+## Awesome R
+
+[Awesome](https://github.com/iamericfletcher/awesome-r-learning-resources)
+
+```{r, echo = FALSE, out.width = "70%", eval=TRUE}
+knitr::include_graphics("https://github.com/allisonhorst/stats-illustrations/blob/master/rstats-artwork/r_first_then.png?raw=true", dpi = 100)
+```
+

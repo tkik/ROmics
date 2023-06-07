@@ -14,10 +14,15 @@ editor_options:
 ## Day 1
 
 [Reproducible programming]("GRanges.html")
+
 [S4 objects]("S4_objects.html")
+
 [rtracklayer]("rtracklayer.html")
+
 [GRanges]("GRanges.html")
+
 [references]("references.html")
+
 [resources]("resources.html")
 
 

@@ -1,0 +1,67 @@
+---
+title: "rtracklayer"
+author: "tkik"
+date: "2023-06-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Importing genome data into R 
+
+```{r}
+library(rtracklayer)
+library(AnnotationHub)
+
+
+```
+
+```{r}
+
+mySession <- browserSession()
+genome(mySession) <- "hg38"
+track.names <- trackNames(ucscTableQuery(mySession))
+tracks <- track.names[28]
+range <- GRanges("chr6", IRanges(20400587, 20403336))
+
+tableNames(ucscTableQuery(mySession, track=tracks))
+encode_basic <- getTable(ucscTableQuery (mySession, track=tracks,
+range=range, table="wgEncodeGencodeBasicV43"))
+
+
+
+```
+
+
+```{r}
+
+ahub <- AnnotationHub()
+table(ahub$rdataclass)
+
+ahub.gr <- subset(ahub, rdataclass == "GRanges" & species == "Homo sapiens")
+gr <- ahub.gr[[1]]
+gr
+
+```
+
+```{r}
+
+chrm <- import.bed("data/hg19_chromhmm.bed")
+ahub.chain <- subset(ahub, rdataclass == "ChainFile" & species == "Homo sapiens")
+query(ahub.chain, c("hg19", "hg38"))
+chain <- ahub.chain[ahub.chain$title == "hg19ToHg38.over.chain.gz"]
+chain <- chain[[1]]
+gr.hg38 <- liftOver(chrm, chain)
+gr.hg38
+
+```
+
+```{r}
+session <- browserSession("UCSC",url = 'http://genome-euro.ucsc.edu/cgi-bin/')
+genome(session) <- "mm9"
+## choose CpG island track on chr12
+query <- ucscTableQuery(session, track="CpG Islands",table="cpgIslandExt",
+        range=GRangesForUCSCGenome("mm9", "chr12"))
+track(query)
+```
+

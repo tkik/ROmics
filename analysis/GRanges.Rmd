@@ -1,0 +1,139 @@
+---
+title: "GRanges"
+author: "tkik"
+date: "2023-06-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+## Granges and GRangesList
+
+`GRanges` objects store information about Genomic ranges with chromosome, position and additional information. Offers a wide range of functionality.
+`GRangesList` is a "grouped" version of `GRnages`, it is similar to a normal list, but with additional functionality. 
+Both of them are able to handle strand information as well.
+
+```{r}
+library(GenomicRanges)
+
+gr1 <- GRanges(
+    seqnames = "chr2",
+    ranges = IRanges(103, 106),
+    strand = "+",
+    score = 5L, GC = 0.45)
+gr2 <- GRanges(
+    seqnames = c("chr1", "chr3"),
+    ranges = IRanges(c(107, 113), width = 3),
+    strand = c("+", "-"),
+    score = 3:4, GC = c(0.3, 0.5))
+gr3 <- GRanges("chr2:102-107")
+
+gr4 <- makeGRangesFromDataFrame(data.frame(chr=c("chr1", "chr2"), 
+                                           start=c(104, 104), end=c(108, 105),
+                                           name=c("gene1", "gene2")), keep.extra.columns = T, ignore.strand = T)
+grl <- GRangesList("txA" = gr1, "txB" = gr2)
+grl
+
+#seqinfo(gr1) <- Seqinfo(genome="hg38")
+#can have names for each row
+
+
+```
+
+
+### Accessors
+
+```{r}
+seqnames(gr1)
+seqlevels(gr1)
+ranges(gr1)
+start(gr1)
+end(gr1)
+strand(gr1)
+width(gr1)
+length(gr1)
+mcols(gr4)
+mcols(gr4)$name
+
+```
+
+### Subsetting
+
+
+```{r}
+#data.frame-like
+
+gr1[1,]
+gr4[1, "name"]
+
+
+# subset function
+subset(gr1, strand == "+")
+
+```
+
+### Splitting and combining
+
+```{r}
+
+sp <- split(gr2, 1:2)
+split(gr4, ~ name)
+
+c(sp[[1]], sp[[2]])
+
+stack(sp, index.var="name")
+
+
+```
+
+### Aggregating
+
+```{r}
+aggregate(gr2, score ~ strand, mean)
+
+```
+
+### Interval operations
+
+```{r}
+flank(gr1, 10, both=T)
+shift(gr2, 5)
+resize(gr1, 20)
+c(gr1, gr3)
+ reduce(c(gr1, gr3)) # combines the overlapping ranges
+
+ reduce(c(gr1, gr3), ignore.strand=T)
+```
+
+### Comapring 2 GRanges
+
+```{r}
+union(gr2, gr4)
+
+intersect(gr2, gr4)
+setdiff(gr2, gr4)
+
+hits <- findOverlaps(gr2, gr4, ignore.strand=TRUE)
+countOverlaps(gr2, gr4, ignore.strand=TRUE)
+subsetByOverlaps(gr2, gr4)
+
+
+```
+
+Create a GRanges object using the information in the table below:
+chr	start	end	strand	score
+chr1	10000	10300	+	10
+chr1	11100	11500	-	20
+chr2	20000	20030	+	15
+
+Use the start(), end(), strand(),seqnames() and width() functions on the GRanges object you created.
+1. Subset only the ones on the + strand. 
+2. subset the ones on the chr1
+
+
+Import mouse (mm9 assembly) CpG islands and RefSeq transcripts for chr12 from the UCSC browser as GRanges objects using rtracklayer functions. HINT: Check chapter content and modify the code there as necessary. If that somehow does not work, go to the UCSC browser and download it as a BED file. The track name for Refseq genes is “RefSeq Genes” and the table name is “refGene”.
+
+Following from the exercise above, get the promoters of Refseq transcripts (-1000bp and +1000 bp of the TSS) and calculate what percentage of them overlap with CpG islands. HINT: You have to get the promoter coordinates and use the findOverlaps() or subsetByOverlaps() from the GenomicRanges package. To get promoters, type ?promoters on the R console and see how to use that function to get promoters or calculate their coordinates as shown in the chapter. 
+
+Find the length of CpG islands that overlap with the promoters.
