@@ -1,0 +1,112 @@
+---
+title: "Reproducible programming"
+author: "tkik"
+date: "2023-06-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+# Reproducible programming
+
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
+
+
+## General rules
+
+1. the scripts should be written in a way, that either you, or someone else will be able to run it anytime.
+
+2. Clean structure, according to the best programming practices
+
+* Variable names according the convention (use _. not " " or -, don't use keywords)
+* `<-` instead of `=`
+* spaces before and after
+* Indentation
+* curly brackets
+* don't store unnecessary objects
+* avoid repetition
+
+- comment your codes in detail
+- Use sessionInfo() to know your package versions
+- Use as generalized code as possible - use names and regular expressions instead of indices. 
+- if possible, define your paths at the beginning and use paste() or file.path() later. Or use relative paths
+- try to do everything from R, because changes in e.g. excel are undocumented.
+
+
+## Use version control
+
+- git is an easy tool to do version control.
+
+    ```{r, echo = FALSE, out.width = "70%"}
+    knitr::include_graphics("https://git-scm.com/book/en/v2/images/lifecycle.png", dpi = 100)
+    ```
+
+
+
+## Rmarkdown, R notebooks
+
+* Rmarkdown document, with code chuncks
+* Markdown language is easy to learn, see the cheatsheat
+* many templates available - flexible themes
+* Description, codes and figures at the same place. 
+* Figures are saved separately as well - or use links
+* Appearance of the code depends on the chunk options.
+
+Show code and output
+
+```{r}
+plot(cars)
+```
+
+Show only output
+
+```{r echo=FALSE}
+plot(cars)
+```
+
+Show code only, don't run
+
+```{r eval=FALSE}
+plot(cars)
+```
+
+* Suppress warnings and messages, if needed.
+* Use cheatsheets
+* easy to add pictures, links, etc.
+* easy to add nice tables
+
+```{r, results='asis'}
+
+library(dplyr)
+data("mtcars")
+knitr::kable(mtcars, format = "html")
+print(xtable::xtable(mtcars), type = 'html')
+ mtcars %>%
+ 	DT::datatable(filter = 'top', 
+          options = list(scrollX = TRUE, keys = TRUE, pageLength = 5),  
+          rownames = FALSE)
+```
+
+* easy to share with collaborators
+
+## workflowr package
+* does the above steps automatically
+* keeps a nice folder structure
+* easy to use git 
+
+
+# Exercises:
+
+- create a new project using wflow_start() and set up a remote repository with github (optional)
+
+```{r eval=FALSE}
+wflow_use_github("tkik", repository="ROmics", create_on_github = T)
+#git push -u origin master
+```
+
+- create a new markdown file in the analysis folder, my_first_project
+
+
