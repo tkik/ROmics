@@ -13,7 +13,7 @@ editor_options:
 
 ## Day 1
 
-[Reproducible programming](GRanges.html)
+[Reproducible programming](reproducible_programming.Rmd)
 
 [S4 objects](S4_objects.html)
 
