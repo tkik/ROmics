@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="tkik" />
+
+<meta name="date" content="2023-06-07" />
+
+<title>rtracklayer</title>
+
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ROmics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tkik/ROmics">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">rtracklayer</h1>
+<h4 class="author">tkik</h4>
+<h4 class="date">2023-06-07</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-06-08
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ROmics/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0.4). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20230606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20230606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20230606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20230606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstreee357ee1375278957f1abedb03e94a79f92507298targetblanke357ee1a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/tkik/ROmics/tree/e357ee1375278957f1abedb03e94a79f92507298" target="_blank">e357ee1</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstreee357ee1375278957f1abedb03e94a79f92507298targetblanke357ee1a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/tkik/ROmics/tree/e357ee1375278957f1abedb03e94a79f92507298" target="_blank">e357ee1</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  output/Genomic data.pptx
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/rtracklayer.Rmd</code>) and HTML
+(<code>docs/rtracklayer.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/e357ee1375278957f1abedb03e94a79f92507298/analysis/rtracklayer.Rmd" target="_blank">e357ee1</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-08
+</td>
+<td>
+additional files
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="importing-genome-data-into-r" class="section level2">
+<h2>Importing genome data into R</h2>
+<pre class="r"><code>library(rtracklayer)</code></pre>
+<pre><code>Loading required package: GenomicRanges</code></pre>
+<pre><code>Loading required package: stats4</code></pre>
+<pre><code>Loading required package: BiocGenerics</code></pre>
+<pre><code>
+Attaching package: &#39;BiocGenerics&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    IQR, mad, sd, var, xtabs</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min</code></pre>
+<pre><code>Loading required package: S4Vectors</code></pre>
+<pre><code>
+Attaching package: &#39;S4Vectors&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    expand.grid, I, unname</code></pre>
+<pre><code>Loading required package: IRanges</code></pre>
+<pre><code>
+Attaching package: &#39;IRanges&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:grDevices&#39;:
+
+    windows</code></pre>
+<pre><code>Loading required package: GenomeInfoDb</code></pre>
+<pre class="r"><code>library(AnnotationHub)</code></pre>
+<pre><code>Loading required package: BiocFileCache</code></pre>
+<pre><code>Loading required package: dbplyr</code></pre>
+<pre><code>
+Attaching package: &#39;AnnotationHub&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:rtracklayer&#39;:
+
+    hubUrl</code></pre>
+<pre class="r"><code>mySession &lt;- browserSession()
+genome(mySession) &lt;- &quot;hg38&quot;
+track.names &lt;- trackNames(ucscTableQuery(mySession))
+tracks &lt;- track.names[28]
+range &lt;- GRanges(&quot;chr6&quot;, IRanges(20400587, 20403336))
+
+tableNames(ucscTableQuery(mySession, track=tracks))</code></pre>
+<pre><code>Warning in .local(x, ...): &#39;track&#39; parameter is deprecated now you go by the &#39;table&#39; instead
+                Use ucscTables(genome, track) to retrieve the list of tables for a track</code></pre>
+<pre><code>[1] &quot;wgEncodeGencodeBasicV43&quot;      &quot;wgEncodeGencodeCompV43&quot;      
+[3] &quot;wgEncodeGencodePseudoGeneV43&quot; &quot;wgEncodeGencodePolyaV43&quot;     
+[5] &quot;wgEncodeGencodeAttrsV43&quot;     </code></pre>
+<pre class="r"><code>encode_basic &lt;- getTable(ucscTableQuery (mySession, track=tracks,
+range=range, table=&quot;wgEncodeGencodeBasicV43&quot;))</code></pre>
+<pre class="r"><code>ahub &lt;- AnnotationHub()</code></pre>
+<pre><code>snapshotDate(): 2022-10-31</code></pre>
+<pre class="r"><code>table(ahub$rdataclass)</code></pre>
+<pre><code>
+                      AAStringSet                        BigWigFile 
+                                1                             10247 
+                           biopax                         ChainFile 
+                                9                              1115 
+                        character                            CompDb 
+                               10                                 3 
+                       data.frame data.frame, DNAStringSet, GRanges 
+                               56                                 3 
+                       data.table                             EnsDb 
+                               32                              4004 
+                           FaFile                           GRanges 
+                                3                             30527 
+                           igraph                     Inparanoid8Db 
+                                2                               268 
+                             list                            MSnSet 
+                               71                                 1 
+                         mzRident                             OrgDb 
+                                1                              1871 
+                              Rda                               Rle 
+                               33                              2292 
+                           sqlite                            SQLite 
+                                1                                 2 
+                 SQLiteConnection                        SQLiteFile 
+                                1                               834 
+                           String                            Tibble 
+                               16                                76 
+                       TwoBitFile                              TxDb 
+                            17825                               485 
+                          VcfFile 
+                                8 </code></pre>
+<pre class="r"><code>ahub.gr &lt;- subset(ahub, rdataclass == &quot;GRanges&quot; &amp; species == &quot;Homo sapiens&quot;)
+gr &lt;- ahub.gr[[1]]</code></pre>
+<pre><code>loading from cache</code></pre>
+<pre class="r"><code>gr</code></pre>
+<pre><code>UCSC track &#39;cytoBand&#39;
+UCSCData object with 862 ranges and 1 metadata column:
+        seqnames            ranges strand |        name
+           &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
+    [1]     chr1         1-2300000      * |      p36.33
+    [2]     chr1   2300001-5400000      * |      p36.32
+    [3]     chr1   5400001-7200000      * |      p36.31
+    [4]     chr1   7200001-9200000      * |      p36.23
+    [5]     chr1  9200001-12700000      * |      p36.22
+    ...      ...               ...    ... .         ...
+  [858]    chr22 37600001-41000000      * |       q13.1
+  [859]    chr22 41000001-44200000      * |       q13.2
+  [860]    chr22 44200001-48400000      * |      q13.31
+  [861]    chr22 48400001-49400000      * |      q13.32
+  [862]    chr22 49400001-51304566      * |      q13.33
+  -------
+  seqinfo: 93 sequences (1 circular) from hg19 genome</code></pre>
+<pre class="r"><code>chrm &lt;- import.bed(&quot;data/hg19_chromhmm.bed&quot;)
+ahub.chain &lt;- subset(ahub, rdataclass == &quot;ChainFile&quot; &amp; species == &quot;Homo sapiens&quot;)
+query(ahub.chain, c(&quot;hg19&quot;, &quot;hg38&quot;))</code></pre>
+<pre><code>AnnotationHub with 4 records
+# snapshotDate(): 2022-10-31
+# $dataprovider: UCSC, NCBI
+# $species: Homo sapiens
+# $rdataclass: ChainFile
+# additional mcols(): taxonomyid, genome, description,
+#   coordinate_1_based, maintainer, rdatadateadded, preparerclass, tags,
+#   rdatapath, sourceurl, sourcetype 
+# retrieve records with, e.g., &#39;object[[&quot;AH14108&quot;]]&#39; 
+
+            title                                        
+  AH14108 | hg38ToHg19.over.chain.gz                     
+  AH14150 | hg19ToHg38.over.chain.gz                     
+  AH78915 | Chain file for Homo sapiens rRNA hg19 to hg38
+  AH78916 | Chain file for Homo sapiens rRNA hg38 to hg19</code></pre>
+<pre class="r"><code>chain &lt;- ahub.chain[ahub.chain$title == &quot;hg19ToHg38.over.chain.gz&quot;]
+chain &lt;- chain[[1]]</code></pre>
+<pre><code>loading from cache</code></pre>
+<pre class="r"><code>gr.hg38 &lt;- liftOver(chrm, chain)
+gr.hg38</code></pre>
+<pre><code>GRangesList object of length 11497:
+[[1]]
+GRanges object with 17 ranges and 3 metadata columns:
+       seqnames            ranges strand |              name     score
+          &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |       &lt;character&gt; &lt;numeric&gt;
+   [1]    chr22 15925850-15927980      * | 13_Heterochrom/lo         0
+   [2]    chr22 15921155-15925841      * | 13_Heterochrom/lo         0
+   [3]    chr22 15919157-15921153      * | 13_Heterochrom/lo         0
+   [4]    chr22 15919126-15919155      * | 13_Heterochrom/lo         0
+   [5]    chr22 15917492-15919124      * | 13_Heterochrom/lo         0
+   ...      ...               ...    ... .               ...       ...
+  [13]    chr22 15910239-15910263      * | 13_Heterochrom/lo         0
+  [14]    chr22 15908187-15910237      * | 13_Heterochrom/lo         0
+  [15]    chr22 15907962-15908172      * | 13_Heterochrom/lo         0
+  [16]    chr22 15906030-15907960      * | 13_Heterochrom/lo         0
+  [17]    chr22 15893763-15906029      * | 13_Heterochrom/lo         0
+                   thick
+               &lt;IRanges&gt;
+   [1] 16050001-16084200
+   [2] 16050001-16084200
+   [3] 16050001-16084200
+   [4] 16050001-16084200
+   [5] 16050001-16084200
+   ...               ...
+  [13] 16050001-16084200
+  [14] 16050001-16084200
+  [15] 16050001-16084200
+  [16] 16050001-16084200
+  [17] 16050001-16084200
+  -------
+  seqinfo: 6 sequences from an unspecified genome; no seqlengths
+
+[[2]]
+GRanges object with 1 range and 3 metadata columns:
+      seqnames            ranges strand |        name     score
+         &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;numeric&gt;
+  [1]    chr22 15893363-15893762      * | 8_Insulator         0
+                  thick
+              &lt;IRanges&gt;
+  [1] 16084201-16084600
+  -------
+  seqinfo: 6 sequences from an unspecified genome; no seqlengths
+
+[[3]]
+GRanges object with 1 range and 3 metadata columns:
+      seqnames            ranges strand |              name     score
+         &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |       &lt;character&gt; &lt;numeric&gt;
+  [1]    chr22 15881763-15893362      * | 13_Heterochrom/lo         0
+                  thick
+              &lt;IRanges&gt;
+  [1] 16084601-16096200
+  -------
+  seqinfo: 6 sequences from an unspecified genome; no seqlengths
+
+...
+&lt;11494 more elements&gt;</code></pre>
+<pre class="r"><code>session &lt;- browserSession(&quot;UCSC&quot;,url = &#39;http://genome-euro.ucsc.edu/cgi-bin/&#39;)
+genome(session) &lt;- &quot;mm9&quot;
+## choose CpG island track on chr12
+query &lt;- ucscTableQuery(session, track=&quot;CpG Islands&quot;,table=&quot;cpgIslandExt&quot;,
+        range=GRangesForUCSCGenome(&quot;mm9&quot;, &quot;chr12&quot;))
+track(query)</code></pre>
+<pre><code>GRanges object with 627 ranges and 8 metadata columns:
+        seqnames              ranges strand |       bin        name    length
+           &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;numeric&gt; &lt;character&gt; &lt;numeric&gt;
+    [1]    chr12     3235440-3235920      * |       609     CpG: 55       480
+    [2]    chr12     3309324-3310176      * |       610    CpG: 112       852
+    [3]    chr12     3365111-3365428      * |       610     CpG: 33       317
+    [4]    chr12     3426605-3427706      * |       611    CpG: 112      1101
+    [5]    chr12     3572055-3572883      * |       612     CpG: 87       828
+    ...      ...                 ...    ... .       ...         ...       ...
+  [623]    chr12 120074997-120075659      * |      1501     CpG: 64       662
+  [624]    chr12 120081567-120081824      * |      1501     CpG: 22       257
+  [625]    chr12 120085201-120085696      * |      1501     CpG: 45       495
+  [626]    chr12 120086986-120088377      * |      1501    CpG: 147      1391
+  [627]    chr12 120476259-120476575      * |      1504     CpG: 23       316
+           cpgNum     gcNum    perCpg     perGc    obsExp
+        &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
+    [1]        55       304      22.9      63.3      1.16
+    [2]       112       606      26.3      71.1      1.04
+    [3]        33       210      20.8      66.2      0.95
+    [4]       112       726      20.3      65.9      0.94
+    [5]        87       517      21.0      62.4      1.11
+    ...       ...       ...       ...       ...       ...
+  [623]        64       450      19.3      68.0      0.84
+  [624]        22       170      17.1      66.1      0.78
+  [625]        45       288      18.2      58.2      1.15
+  [626]       147       908      21.1      65.3      0.99
+  [627]        23       200      14.6      63.3      0.73
+  -------
+  seqinfo: 1 sequence from mm9 genome; no seqlengths</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.3 (2023-03-15 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19042)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] AnnotationHub_3.6.0  BiocFileCache_2.6.1  dbplyr_2.3.0        
+ [4] rtracklayer_1.58.0   GenomicRanges_1.50.2 GenomeInfoDb_1.34.9 
+ [7] IRanges_2.32.0       S4Vectors_0.36.1     BiocGenerics_0.44.0 
+[10] workflowr_1.7.0.4   
+
+loaded via a namespace (and not attached):
+ [1] bitops_1.0-7                  matrixStats_0.63.0           
+ [3] fs_1.5.2                      bit64_4.0.5                  
+ [5] filelock_1.0.2                httr_1.4.4                   
+ [7] rprojroot_2.0.3               tools_4.2.3                  
+ [9] bslib_0.4.2                   utf8_1.2.3                   
+[11] R6_2.5.1                      DBI_1.1.3                    
+[13] withr_2.5.0                   tidyselect_1.2.0             
+[15] processx_3.7.0                bit_4.0.5                    
+[17] curl_5.0.0                    compiler_4.2.3               
+[19] git2r_0.30.1                  cli_3.6.0                    
+[21] Biobase_2.58.0                DelayedArray_0.23.2          
+[23] sass_0.4.5                    callr_3.7.3                  
+[25] rappdirs_0.3.3                stringr_1.5.0                
+[27] digest_0.6.29                 Rsamtools_2.14.0             
+[29] rmarkdown_2.20                XVector_0.38.0               
+[31] pkgconfig_2.0.3               htmltools_0.5.4              
+[33] MatrixGenerics_1.10.0         fastmap_1.1.0                
+[35] rlang_1.0.6                   rstudioapi_0.14              
+[37] RSQLite_2.3.0                 shiny_1.7.4                  
+[39] jquerylib_0.1.4               BiocIO_1.8.0                 
+[41] generics_0.1.3                jsonlite_1.8.4               
+[43] BiocParallel_1.32.5           dplyr_1.1.0                  
+[45] RCurl_1.98-1.10               magrittr_2.0.3               
+[47] GenomeInfoDbData_1.2.9        Matrix_1.5-3                 
+[49] Rcpp_1.0.9                    fansi_1.0.4                  
+[51] lifecycle_1.0.3               stringi_1.7.8                
+[53] whisker_0.4.1                 yaml_2.3.6                   
+[55] SummarizedExperiment_1.28.0   zlibbioc_1.44.0              
+[57] grid_4.2.3                    blob_1.2.3                   
+[59] parallel_4.2.3                promises_1.2.0.1             
+[61] crayon_1.5.2                  lattice_0.20-45              
+[63] Biostrings_2.66.0             KEGGREST_1.38.0              
+[65] knitr_1.42                    ps_1.7.0                     
+[67] pillar_1.8.1                  rjson_0.2.21                 
+[69] codetools_0.2-19              XML_3.99-0.13                
+[71] glue_1.6.2                    BiocVersion_3.16.0           
+[73] evaluate_0.20                 getPass_0.2-2                
+[75] BiocManager_1.30.20           vctrs_0.5.2                  
+[77] png_0.1-8                     httpuv_1.6.6                 
+[79] purrr_1.0.1                   assertthat_0.2.1             
+[81] cachem_1.0.6                  xfun_0.37                    
+[83] mime_0.12                     xtable_1.8-4                 
+[85] restfulr_0.0.15               later_1.3.0                  
+[87] tibble_3.1.8                  GenomicAlignments_1.34.0     
+[89] AnnotationDbi_1.60.0          memoise_2.0.1                
+[91] ellipsis_0.3.2                interactiveDisplayBase_1.36.0</code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
