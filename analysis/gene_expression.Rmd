@@ -1,0 +1,355 @@
+---
+title: "RNASeq data analysis "
+author: "Reka_Toth"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+ # html_notebook: default
+  workflowr::wflow_html:
+    toc: false
+    code_folding: "show"
+#output: workflowr::wflow_html:
+editor_options:
+  chunk_output_type: console
+---
+
+
+## Steps of analysing gene expression data
+
+1. Read in counts to R
+
+2. Normalize dataset
+
+3. Visualize - dimensionality reduction, clustering, correlation plots
+
+4. Differential expression analysis (batch effects)
+
+5. Visualization of the results - volcano plot, dotplot, heatmaps
+
+6. Enrichment and pathway analysis
+
+
+```{r include=F}
+knitr::opts_chunk$set(message = F, warning = F)
+```
+
+
+
+```{r}
+
+library(tidyverse)
+library(GEOquery)
+library(DESeq2)
+library(ggfortify)
+library(ggpubr)
+library(ggsci)
+library(Glimma)
+library(corrplot)
+library(sva)
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+library("clusterProfiler")
+library(pheatmap)
+library(DOSE)
+library(enrichplot)
+library(topGO)
+
+
+
+```
+
+
+```{r, results='asis'}
+cat("## Download an example dataset from GEO \n")
+# load counts table from GEO
+#urld <- "https://www.ncbi.nlm.nih.gov/geo/download/?format=file&type=rnaseq_counts"
+#path <- paste(urld, "acc=GSE181144", "file=GSE181144_raw_counts_GRCh38.p13_NCBI.tsv.gz", sep="&");
+#tbl <- as.matrix(data.table::fread(path, header=T, colClasses="integer"), rownames=1)
+
+#write.table(tbl, file="data/count_data.txt", sep="\t",  row.names = T, col.names=T, quote = F)
+
+# clear the sample annotation 
+data <- getGEO('GSE181144')
+metadata <-  data$GSE181144_series_matrix.txt.gz@phenoData@data
+phenodata <- metadata[,c("title", "geo_accession", "source_name_ch1", "cell type:ch1", "tissue:ch1", "treatment:ch1", "description", "characteristics_ch1")]
+
+
+gene_count_matrix <- read.table("data/count_data.txt", header = T, row.names=1)
+
+cat("Filtering the dataset, so only two groups are included - for the sake of simplicity. \n")
+
+phenodata <- phenodata %>%
+  filter(grepl("overexpression", description))  %>%
+  rename_with(~ gsub(" |:", ".", .x)) %>%
+  mutate(description=gsub(" ", "_", description)) %>%
+  mutate(description=gsub("overexpression", "oe", description)) 
+
+gene_count_matrix <- gene_count_matrix[,rownames(phenodata)]
+
+cat("It might worth to exclude the genes that are not expressed in any of the samples. ")
+
+gene_count_matrix <- gene_count_matrix[rowSums(gene_count_matrix)>10,]
+
+dds <- DESeqDataSetFromMatrix(countData = gene_count_matrix,
+                              colData = phenodata,
+                              design = ~ description)
+
+
+dds <- DESeq(dds)
+ge_mat <- getVarianceStabilizedData(dds)
+
+
+```
+
+## Visualizing the dataset using dimensionality reduction algorithms
+
+### PCA plot 
+
+```{r}
+
+pca_res <- prcomp(t(ge_mat), scale. = TRUE)
+pca_plot <- as.data.frame(cbind(pca_res$x,colData(dds)))
+
+ggpubr::ggscatter(pca_plot, x="PC1", y="PC2", color="description")
+ggpubr::ggscatter(pca_plot, x="PC1", y="PC2", color="cell.type.ch1", palette = "npg", size = 2, label = "title")
+
+pca_plot <- pca_plot %>%
+  mutate(patient= gsub("(.*)_(empty_vector|MEOX2)_(rep[[:digit:]])", "\\1", title))
+
+ggpubr::ggscatter(pca_plot, x="PC1", y="PC2", color="cell.type.ch1", palette = "npg", size = 2, shape="patient")
+ggpubr::ggscatter(pca_plot, x="PC1", y="PC2", color="description", palette = "npg", size = 2, shape="patient")
+
+
+cat("Since we see now how much the cell type and the patient affect gene expression, we should add them to the model. \n")
+
+
+phenodata <- phenodata %>% 
+  mutate(patient= gsub("(.*)_(empty_vector|MEOX2)_(rep[[:digit:]])", "\\1", title))
+
+
+dds <- DESeqDataSetFromMatrix(countData = gene_count_matrix,
+                              colData = phenodata,
+                              design = ~ patient + description)
+
+
+dds <- DESeq(dds)
+ge_mat <- getVarianceStabilizedData(dds)
+
+
+```
+
+
+### Interactive MDS plot
+
+```{r, eval=F}
+
+glMDSPlot(ge_mat,  groups=dds$description, labels=dds$patient, launch=T, folder = "/glimma-plots")
+
+```
+
+### Correlation plots
+
+```{r}
+corr = cor(ge_mat)
+
+corrplot(corr)
+
+corrplot(corr, col.lim = c(min(corr), max(corr)), is.corr = F, tl.col = "black", tl.cex = 0.7)
+colnames(corr) <- dds$title
+rownames(corr) <- dds$title
+
+corrplot(corr, col.lim = c(min(corr), max(corr)), is.corr = F, tl.col = "black", tl.cex = 0.7)
+
+
+```
+
+## Batch effect correction
+
+```{r}
+
+adjusted <- ComBat_seq(counts = as.matrix(gene_count_matrix), batch = phenodata$cell.type.ch1)
+
+dds_combat = DESeq2::DESeqDataSetFromMatrix(countData = adjusted, colData = phenodata, design = ~ description)
+
+dds_combat <- DESeq(dds_combat)
+ge_mat_combat <- getVarianceStabilizedData(dds_combat)
+
+pca_res <- prcomp(t(ge_mat_combat), scale. = TRUE)
+pca_plot <- as.data.frame(cbind(pca_res$x,colData(dds_combat)))
+
+ggpubr::ggscatter(pca_plot, x="PC1", y="PC2", color="description")
+ggpubr::ggscatter(pca_plot, x="PC1", y="PC2", color="cell.type.ch1", palette = "npg", size = 2, shape="description")
+
+```
+
+## Differential gene expression analysis
+
+```{r}
+
+DEresults = results(dds)
+#DEresults2 = results(dds, contrast = c("description", "oe_control", "MEOX2_oe"))
+
+ggpubr::gghistogram(as.data.frame(DEresults), x="pvalue", bins = 100)
+
+```
+
+### Change the gene identifiers to something more intuitive 
+
+```{r, results='asis'}
+gene_anno <- data.frame(row.names = rownames(DEresults), GeneID=rownames(DEresults))
+gene_anno$symbol <- mapIds(org.Hs.eg.db,
+                            keys=gene_anno$GeneID,
+                            column="SYMBOL",
+                            keytype="ENTREZID",
+                            multiVals="first")
+gene_anno$ensembl <- mapIds(org.Hs.eg.db,
+                            keys=gene_anno$GeneID,
+                            column="ENSEMBL",
+                            keytype="ENTREZID",
+                            multiVals="first")
+
+cat("There are symbols which are missing and not unique. For the sake of simplicity, we can visual")
+
+```
+
+
+## Visualizing the results 
+
+### Heatmap
+
+```{r}
+
+sig_genes <- ge_mat[rownames(DEresults)[which(DEresults$padj<0.05)],]
+
+pheatmap(sig_genes, cluster_cols = F, show_colnames = F, show_rownames = F, annotation_col = phenodata[,c("cell.type.ch1", "description", "patient")])
+
+cat("Better scaled... \n")
+
+pheatmap(sig_genes, cluster_cols = F, show_colnames = F, show_rownames = F, annotation_col = phenodata[,c("cell.type.ch1", "description", "patient")], scale = "row")
+
+cat("Even better when using the batch effect corrected dataset... \n")
+
+sig_genes <- ge_mat_combat[rownames(DEresults)[which(DEresults$padj<0.05)],]
+
+pheatmap(sig_genes, cluster_cols = F, show_colnames = F, show_rownames = F, annotation_col = phenodata[,c("cell.type.ch1", "description", "patient")], scale = "row")
+
+```
+
+### Volcano plot 
+
+```{r}
+
+ge_mat_combat <- ge_mat_combat[complete.cases(ge_mat_combat),]
+valid_res <- DEresults %>%
+  as.data.frame() %>%
+  filter(!is.na(padj)) 
+  
+valid_res <- valid_res[rownames(valid_res) %in% rownames(ge_mat_combat),] %>%
+  mutate(log10padj=-log10(padj)) %>%
+  cbind(gene_anno[rownames(valid_res),])
+
+
+```
+
+### Interactive plot with Glimma
+
+```{r, eval=F}
+
+
+phenodata <- phenodata %>% 
+  rename(group=description)
+
+glMDPlot(
+x=valid_res, yval="log2FoldChange", xval="log10padj",
+counts = ge_mat_combat[rownames(valid_res),],
+anno = gene_anno[rownames(valid_res),],
+groups = phenodata[,"group"],
+main = "MD plot",
+status = as.numeric(valid_res$padj < 0.05),
+launch = T,
+folder = "/glimma-plots" ,
+transform = F, samples = rownames(phenodata)
+)
+
+valid_res <- as.data.frame(DESeq2::results(dds))  %>%
+  filter(complete.cases(.))
+
+glimmaMA(
+x=dds,
+counts = ge_mat_combat[rownames(valid_res),],
+anno = gene_anno[rownames(valid_res),],
+groups = phenodata[,"group"],
+xlab = "counts_vst",
+main = "MA plot",
+launch = T,
+folder = "/glimma-plots" ,
+transform = 'none'
+)
+
+
+```
+
+## Enrichment analysis
+
+### Enrichment analysis with the clusterProfiler package
+
+```{r}
+
+edo <- enrichDGN(rownames(valid_res[valid_res$padj<0.05,]), universe = rownames(valid_res))
+barplot(edo, showCategory=20)
+
+
+edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
+p1 <- cnetplot(edox, foldChange=valid_res[valid_res$padj<0.05,"log2FoldChange"])
+p1
+
+p2 <- heatplot(edox, foldChange=valid_res[valid_res$padj<0.05,"log2FoldChange"], showCategory=2)
+p2
+
+```
+
+
+
+```{r}
+
+ordered_list <- valid_res[valid_res$padj<0.05,] %>% arrange(desc(log2FoldChange))
+geneList <- ordered_list$log2FoldChange
+names(geneList) <- rownames(ordered_list)
+edo2 <- gseDO(geneList)
+
+p1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
+
+
+```
+
+
+
+### GeneTonic
+
+```{r, eval=F}
+enr <- topGOtable(rownames(valid_res[valid_res$padj<0.05,] ), rownames(valid_res),
+ontology = "BP",
+mapping = "org.Hs.eg.db",
+geneID = "entrez")
+DEresults$SYMBOL <- gene_anno$gene_name
+
+res_enrich <- shake_topGOtableResult(enr)
+DEresults$SYMBOL <- gene_anno$gene_name
+GeneTonic(dds = dds,
+          res_de = DEresults,
+          res_enrich = res_enrich,
+          annotation_obj = gene_anno,
+          project_id = "my_first_genetonic")
+
+```
+
+
+## Homework
+
+```{r}
+library("macrophage")
+data("gse", package = "macrophage")
+
+dds_macrophage <- DESeqDataSet(gse, design = ~line + condition)
+
+```
+
