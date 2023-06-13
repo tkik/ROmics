@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Reka_Toth" />
+
+
+<title>RNASeq data analysis</title>
+
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ROmics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tkik/ROmics">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">RNASeq data analysis</h1>
+<h4 class="author">Reka_Toth</h4>
+<h4 class="date">14 June, 2023</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-06-14
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ROmics/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0.4). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20230606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20230606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20230606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20230606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstreefb9b64eac648d88b5b481e2026e7534b18ae0c86targetblankfb9b64ea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/tkik/ROmics/tree/fb9b64eac648d88b5b481e2026e7534b18ae0c86" target="_blank">fb9b64e</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstreefb9b64eac648d88b5b481e2026e7534b18ae0c86targetblankfb9b64ea"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/tkik/ROmics/tree/fb9b64eac648d88b5b481e2026e7534b18ae0c86" target="_blank">fb9b64e</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  count_data.txt
+    Untracked:  data/GPL20301.soft.gz
+    Untracked:  data/GSE181144_series_matrix.txt.gz
+    Untracked:  data/count_data.txt
+    Untracked:  glimma-plots/
+    Untracked:  output/Genomic data.pptx
+
+Unstaged changes:
+    Modified:   analysis/reproducible_programming.Rmd
+    Modified:   code/install_libraries.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/gene_expression.Rmd</code>) and
+HTML (<code>docs/gene_expression.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/fb9b64eac648d88b5b481e2026e7534b18ae0c86/analysis/gene_expression.Rmd" target="_blank">fb9b64e</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+wflow_publish("analysis/gene_expression.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="steps-of-analysing-gene-expression-data"
+class="section level2">
+<h2>Steps of analysing gene expression data</h2>
+<ol style="list-style-type: decimal">
+<li><p>Read in counts to R</p></li>
+<li><p>Normalize dataset</p></li>
+<li><p>Visualize - dimensionality reduction, clustering, correlation
+plots</p></li>
+<li><p>Differential expression analysis (batch effects)</p></li>
+<li><p>Visualization of the results - volcano plot, dotplot,
+heatmaps</p></li>
+<li><p>Enrichment and pathway analysis</p></li>
+</ol>
+<pre class="r"><code>library(tidyverse)
+library(GEOquery)
+library(DESeq2)
+library(ggfortify)
+library(ggpubr)
+library(ggsci)
+library(Glimma)
+library(corrplot)
+library(sva)
+library(&quot;AnnotationDbi&quot;)
+library(&quot;org.Hs.eg.db&quot;)
+library(&quot;clusterProfiler&quot;)
+library(pheatmap)
+library(DOSE)
+library(enrichplot)
+library(topGO)</code></pre>
+<pre class="r"><code>cat(&quot;## Download an example dataset from GEO \n&quot;)</code></pre>
+</div>
+<div id="download-an-example-dataset-from-geo" class="section level2">
+<h2>Download an example dataset from GEO</h2>
+<pre class="r"><code># load counts table from GEO
+#urld &lt;- &quot;https://www.ncbi.nlm.nih.gov/geo/download/?format=file&amp;type=rnaseq_counts&quot;
+#path &lt;- paste(urld, &quot;acc=GSE181144&quot;, &quot;file=GSE181144_raw_counts_GRCh38.p13_NCBI.tsv.gz&quot;, sep=&quot;&amp;&quot;);
+#tbl &lt;- as.matrix(data.table::fread(path, header=T, colClasses=&quot;integer&quot;), rownames=1)
+
+#write.table(tbl, file=&quot;data/count_data.txt&quot;, sep=&quot;\t&quot;,  row.names = T, col.names=T, quote = F)
+
+# clear the sample annotation 
+data &lt;- getGEO(&#39;GSE181144&#39;)
+metadata &lt;-  data$GSE181144_series_matrix.txt.gz@phenoData@data
+phenodata &lt;- metadata[,c(&quot;title&quot;, &quot;geo_accession&quot;, &quot;source_name_ch1&quot;, &quot;cell type:ch1&quot;, &quot;tissue:ch1&quot;, &quot;treatment:ch1&quot;, &quot;description&quot;, &quot;characteristics_ch1&quot;)]
+
+
+gene_count_matrix &lt;- read.table(&quot;data/count_data.txt&quot;, header = T, row.names=1)
+
+cat(&quot;Filtering the dataset, so only two groups are included - for the sake of simplicity. \n&quot;)</code></pre>
+<p>Filtering the dataset, so only two groups are included - for the sake
+of simplicity.</p>
+<pre class="r"><code>phenodata &lt;- phenodata %&gt;%
+  filter(grepl(&quot;overexpression&quot;, description))  %&gt;%
+  rename_with(~ gsub(&quot; |:&quot;, &quot;.&quot;, .x)) %&gt;%
+  mutate(description=gsub(&quot; &quot;, &quot;_&quot;, description)) %&gt;%
+  mutate(description=gsub(&quot;overexpression&quot;, &quot;oe&quot;, description)) 
+
+gene_count_matrix &lt;- gene_count_matrix[,rownames(phenodata)]
+
+cat(&quot;It might worth to exclude the genes that are not expressed in any of the samples. &quot;)</code></pre>
+<p>It might worth to exclude the genes that are not expressed in any of
+the samples.</p>
+<pre class="r"><code>gene_count_matrix &lt;- gene_count_matrix[rowSums(gene_count_matrix)&gt;10,]
+
+dds &lt;- DESeqDataSetFromMatrix(countData = gene_count_matrix,
+                              colData = phenodata,
+                              design = ~ description)
+
+
+dds &lt;- DESeq(dds)
+ge_mat &lt;- getVarianceStabilizedData(dds)</code></pre>
+</div>
+<div
+id="visualizing-the-dataset-using-dimensionality-reduction-algorithms"
+class="section level2">
+<h2>Visualizing the dataset using dimensionality reduction
+algorithms</h2>
+<div id="pca-plot" class="section level3">
+<h3>PCA plot</h3>
+<pre class="r"><code>pca_res &lt;- prcomp(t(ge_mat), scale. = TRUE)
+pca_plot &lt;- as.data.frame(cbind(pca_res$x,colData(dds)))
+
+ggpubr::ggscatter(pca_plot, x=&quot;PC1&quot;, y=&quot;PC2&quot;, color=&quot;description&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggpubr::ggscatter(pca_plot, x=&quot;PC1&quot;, y=&quot;PC2&quot;, color=&quot;cell.type.ch1&quot;, palette = &quot;npg&quot;, size = 2, label = &quot;title&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pca_plot &lt;- pca_plot %&gt;%
+  mutate(patient= gsub(&quot;(.*)_(empty_vector|MEOX2)_(rep[[:digit:]])&quot;, &quot;\\1&quot;, title))
+
+ggpubr::ggscatter(pca_plot, x=&quot;PC1&quot;, y=&quot;PC2&quot;, color=&quot;cell.type.ch1&quot;, palette = &quot;npg&quot;, size = 2, shape=&quot;patient&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggpubr::ggscatter(pca_plot, x=&quot;PC1&quot;, y=&quot;PC2&quot;, color=&quot;description&quot;, palette = &quot;npg&quot;, size = 2, shape=&quot;patient&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cat(&quot;Since we see now how much the cell type and the patient affect gene expression, we should add them to the model. \n&quot;)</code></pre>
+<pre><code>Since we see now how much the cell type and the patient affect gene expression, we should add them to the model. </code></pre>
+<pre class="r"><code>phenodata &lt;- phenodata %&gt;% 
+  mutate(patient= gsub(&quot;(.*)_(empty_vector|MEOX2)_(rep[[:digit:]])&quot;, &quot;\\1&quot;, title))
+
+
+dds &lt;- DESeqDataSetFromMatrix(countData = gene_count_matrix,
+                              colData = phenodata,
+                              design = ~ patient + description)
+
+
+dds &lt;- DESeq(dds)
+ge_mat &lt;- getVarianceStabilizedData(dds)</code></pre>
+</div>
+<div id="interactive-mds-plot" class="section level3">
+<h3>Interactive MDS plot</h3>
+<pre class="r"><code>glMDSPlot(ge_mat,  groups=dds$description, labels=dds$patient, launch=T, folder = &quot;/glimma-plots&quot;)</code></pre>
+</div>
+<div id="correlation-plots" class="section level3">
+<h3>Correlation plots</h3>
+<pre class="r"><code>corr = cor(ge_mat)
+
+corrplot(corr)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>corrplot(corr, col.lim = c(min(corr), max(corr)), is.corr = F, tl.col = &quot;black&quot;, tl.cex = 0.7)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>colnames(corr) &lt;- dds$title
+rownames(corr) &lt;- dds$title
+
+corrplot(corr, col.lim = c(min(corr), max(corr)), is.corr = F, tl.col = &quot;black&quot;, tl.cex = 0.7)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="batch-effect-correction" class="section level2">
+<h2>Batch effect correction</h2>
+<pre class="r"><code>adjusted &lt;- ComBat_seq(counts = as.matrix(gene_count_matrix), batch = phenodata$cell.type.ch1)</code></pre>
+<pre><code>Found 2 batches
+Using null model in ComBat-seq.
+Adjusting for 0 covariate(s) or covariate level(s)
+Estimating dispersions
+Fitting the GLM model
+Shrinkage off - using GLM estimates for parameters
+Adjusting the data</code></pre>
+<pre class="r"><code>dds_combat = DESeq2::DESeqDataSetFromMatrix(countData = adjusted, colData = phenodata, design = ~ description)
+
+dds_combat &lt;- DESeq(dds_combat)
+ge_mat_combat &lt;- getVarianceStabilizedData(dds_combat)
+
+pca_res &lt;- prcomp(t(ge_mat_combat), scale. = TRUE)
+pca_plot &lt;- as.data.frame(cbind(pca_res$x,colData(dds_combat)))
+
+ggpubr::ggscatter(pca_plot, x=&quot;PC1&quot;, y=&quot;PC2&quot;, color=&quot;description&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggpubr::ggscatter(pca_plot, x=&quot;PC1&quot;, y=&quot;PC2&quot;, color=&quot;cell.type.ch1&quot;, palette = &quot;npg&quot;, size = 2, shape=&quot;description&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="differential-gene-expression-analysis" class="section level2">
+<h2>Differential gene expression analysis</h2>
+<pre class="r"><code>DEresults = results(dds)
+#DEresults2 = results(dds, contrast = c(&quot;description&quot;, &quot;oe_control&quot;, &quot;MEOX2_oe&quot;))
+
+ggpubr::gghistogram(as.data.frame(DEresults), x=&quot;pvalue&quot;, bins = 100)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="change-the-gene-identifiers-to-something-more-intuitive"
+class="section level3">
+<h3>Change the gene identifiers to something more intuitive</h3>
+<pre class="r"><code>gene_anno &lt;- data.frame(row.names = rownames(DEresults), GeneID=rownames(DEresults))
+gene_anno$symbol &lt;- mapIds(org.Hs.eg.db,
+                            keys=gene_anno$GeneID,
+                            column=&quot;SYMBOL&quot;,
+                            keytype=&quot;ENTREZID&quot;,
+                            multiVals=&quot;first&quot;)
+gene_anno$ensembl &lt;- mapIds(org.Hs.eg.db,
+                            keys=gene_anno$GeneID,
+                            column=&quot;ENSEMBL&quot;,
+                            keytype=&quot;ENTREZID&quot;,
+                            multiVals=&quot;first&quot;)
+
+cat(&quot;There are symbols which are missing and not unique. For the sake of simplicity, we can visual&quot;)</code></pre>
+<p>There are symbols which are missing and not unique. For the sake of
+simplicity, we can visual</p>
+</div>
+</div>
+<div id="visualizing-the-results" class="section level2">
+<h2>Visualizing the results</h2>
+<div id="heatmap" class="section level3">
+<h3>Heatmap</h3>
+<pre class="r"><code>sig_genes &lt;- ge_mat[rownames(DEresults)[which(DEresults$padj&lt;0.05)],]
+
+pheatmap(sig_genes, cluster_cols = F, show_colnames = F, show_rownames = F, annotation_col = phenodata[,c(&quot;cell.type.ch1&quot;, &quot;description&quot;, &quot;patient&quot;)])</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cat(&quot;Better scaled... \n&quot;)</code></pre>
+<pre><code>Better scaled... </code></pre>
+<pre class="r"><code>pheatmap(sig_genes, cluster_cols = F, show_colnames = F, show_rownames = F, annotation_col = phenodata[,c(&quot;cell.type.ch1&quot;, &quot;description&quot;, &quot;patient&quot;)], scale = &quot;row&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cat(&quot;Even better when using the batch effect corrected dataset... \n&quot;)</code></pre>
+<pre><code>Even better when using the batch effect corrected dataset... </code></pre>
+<pre class="r"><code>sig_genes &lt;- ge_mat_combat[rownames(DEresults)[which(DEresults$padj&lt;0.05)],]
+
+pheatmap(sig_genes, cluster_cols = F, show_colnames = F, show_rownames = F, annotation_col = phenodata[,c(&quot;cell.type.ch1&quot;, &quot;description&quot;, &quot;patient&quot;)], scale = &quot;row&quot;)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="volcano-plot" class="section level3">
+<h3>Volcano plot</h3>
+<pre class="r"><code>ge_mat_combat &lt;- ge_mat_combat[complete.cases(ge_mat_combat),]
+valid_res &lt;- DEresults %&gt;%
+  as.data.frame() %&gt;%
+  filter(!is.na(padj)) 
+  
+valid_res &lt;- valid_res[rownames(valid_res) %in% rownames(ge_mat_combat),] %&gt;%
+  mutate(log10padj=-log10(padj)) %&gt;%
+  cbind(gene_anno[rownames(valid_res),])</code></pre>
+</div>
+<div id="interactive-plot-with-glimma" class="section level3">
+<h3>Interactive plot with Glimma</h3>
+<pre class="r"><code>phenodata &lt;- phenodata %&gt;% 
+  rename(group=description)
+
+glMDPlot(
+x=valid_res, yval=&quot;log2FoldChange&quot;, xval=&quot;log10padj&quot;,
+counts = ge_mat_combat[rownames(valid_res),],
+anno = gene_anno[rownames(valid_res),],
+groups = phenodata[,&quot;group&quot;],
+main = &quot;MD plot&quot;,
+status = as.numeric(valid_res$padj &lt; 0.05),
+launch = T,
+folder = &quot;/glimma-plots&quot; ,
+transform = F, samples = rownames(phenodata)
+)
+
+valid_res &lt;- as.data.frame(DESeq2::results(dds))  %&gt;%
+  filter(complete.cases(.))
+
+glimmaMA(
+x=dds,
+counts = ge_mat_combat[rownames(valid_res),],
+anno = gene_anno[rownames(valid_res),],
+groups = phenodata[,&quot;group&quot;],
+xlab = &quot;counts_vst&quot;,
+main = &quot;MA plot&quot;,
+launch = T,
+folder = &quot;/glimma-plots&quot; ,
+transform = &#39;none&#39;
+)</code></pre>
+</div>
+</div>
+<div id="enrichment-analysis" class="section level2">
+<h2>Enrichment analysis</h2>
+<div id="enrichment-analysis-with-the-clusterprofiler-package"
+class="section level3">
+<h3>Enrichment analysis with the clusterProfiler package</h3>
+<pre class="r"><code>edo &lt;- enrichDGN(rownames(valid_res[valid_res$padj&lt;0.05,]), universe = rownames(valid_res))
+barplot(edo, showCategory=20)</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>edox &lt;- setReadable(edo, &#39;org.Hs.eg.db&#39;, &#39;ENTREZID&#39;)
+p1 &lt;- cnetplot(edox, foldChange=valid_res[valid_res$padj&lt;0.05,&quot;log2FoldChange&quot;])
+p1</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2 &lt;- heatplot(edox, foldChange=valid_res[valid_res$padj&lt;0.05,&quot;log2FoldChange&quot;], showCategory=2)
+p2</code></pre>
+<p><img src="figure/gene_expression.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ordered_list &lt;- valid_res[valid_res$padj&lt;0.05,] %&gt;% arrange(desc(log2FoldChange))
+geneList &lt;- ordered_list$log2FoldChange
+names(geneList) &lt;- rownames(ordered_list)
+edo2 &lt;- gseDO(geneList)
+
+p1 &lt;- gseaplot(edo2, geneSetID = 1, by = &quot;runningScore&quot;, title = edo2$Description[1])</code></pre>
+</div>
+<div id="genetonic" class="section level3">
+<h3>GeneTonic</h3>
+<pre class="r"><code>enr &lt;- topGOtable(rownames(valid_res[valid_res$padj&lt;0.05,] ), rownames(valid_res),
+ontology = &quot;BP&quot;,
+mapping = &quot;org.Hs.eg.db&quot;,
+geneID = &quot;entrez&quot;)
+DEresults$SYMBOL &lt;- gene_anno$gene_name
+
+res_enrich &lt;- shake_topGOtableResult(enr)
+DEresults$SYMBOL &lt;- gene_anno$gene_name
+GeneTonic(dds = dds,
+          res_de = DEresults,
+          res_enrich = res_enrich,
+          annotation_obj = gene_anno,
+          project_id = &quot;my_first_genetonic&quot;)</code></pre>
+</div>
+</div>
+<div id="homework" class="section level2">
+<h2>Homework</h2>
+<pre class="r"><code>library(&quot;macrophage&quot;)
+data(&quot;gse&quot;, package = &quot;macrophage&quot;)
+
+dds_macrophage &lt;- DESeqDataSet(gse, design = ~line + condition)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.3 (2023-03-15 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19042)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] macrophage_1.14.0           topGO_2.50.0               
+ [3] SparseM_1.81                GO.db_3.16.0               
+ [5] graph_1.76.0                enrichplot_1.18.3          
+ [7] DOSE_3.24.2                 pheatmap_1.0.12            
+ [9] clusterProfiler_4.6.0       org.Hs.eg.db_3.16.0        
+[11] AnnotationDbi_1.60.0        sva_3.46.0                 
+[13] BiocParallel_1.32.5         genefilter_1.80.3          
+[15] mgcv_1.8-42                 nlme_3.1-162               
+[17] corrplot_0.92               Glimma_2.8.0               
+[19] ggsci_2.9                   ggpubr_0.6.0               
+[21] ggfortify_0.4.15            DESeq2_1.38.3              
+[23] SummarizedExperiment_1.28.0 MatrixGenerics_1.10.0      
+[25] matrixStats_0.63.0          GenomicRanges_1.50.2       
+[27] GenomeInfoDb_1.34.9         IRanges_2.32.0             
+[29] S4Vectors_0.36.1            GEOquery_2.66.0            
+[31] Biobase_2.58.0              BiocGenerics_0.44.0        
+[33] lubridate_1.9.2             forcats_1.0.0              
+[35] stringr_1.5.0               dplyr_1.1.0                
+[37] purrr_1.0.1                 readr_2.1.4                
+[39] tidyr_1.3.0                 tibble_3.1.8               
+[41] ggplot2_3.4.1               tidyverse_2.0.0            
+[43] workflowr_1.7.0.4          
+
+loaded via a namespace (and not attached):
+  [1] utf8_1.2.3             R.utils_2.12.2         tidyselect_1.2.0      
+  [4] RSQLite_2.3.0          htmlwidgets_1.6.1      grid_4.2.3            
+  [7] scatterpie_0.1.8       munsell_0.5.0          codetools_0.2-19      
+ [10] withr_2.5.0            colorspace_2.1-0       GOSemSim_2.24.0       
+ [13] highr_0.10             knitr_1.42             rstudioapi_0.14       
+ [16] ggsignif_0.6.4         labeling_0.4.2         git2r_0.30.1          
+ [19] GenomeInfoDbData_1.2.9 polyclip_1.10-4        bit64_4.0.5           
+ [22] farver_2.1.1           rprojroot_2.0.3        downloader_0.4        
+ [25] vctrs_0.5.2            treeio_1.22.0          generics_0.1.3        
+ [28] gson_0.0.9             xfun_0.37              timechange_0.2.0      
+ [31] R6_2.5.1               graphlayouts_0.8.4     locfit_1.5-9.7        
+ [34] bitops_1.0-7           cachem_1.0.6           fgsea_1.24.0          
+ [37] gridGraphics_0.5-1     DelayedArray_0.23.2    promises_1.2.0.1      
+ [40] scales_1.2.1           ggraph_2.1.0           gtable_0.3.1          
+ [43] processx_3.7.0         tidygraph_1.2.3        rlang_1.0.6           
+ [46] splines_4.2.3          rstatix_0.7.2          lazyeval_0.2.2        
+ [49] broom_1.0.3            yaml_2.3.6             reshape2_1.4.4        
+ [52] abind_1.4-5            backports_1.4.1        httpuv_1.6.6          
+ [55] qvalue_2.30.0          tools_4.2.3            ggplotify_0.1.0       
+ [58] ellipsis_0.3.2         jquerylib_0.1.4        RColorBrewer_1.1-3    
+ [61] Rcpp_1.0.9             plyr_1.8.8             zlibbioc_1.44.0       
+ [64] RCurl_1.98-1.10        ps_1.7.0               viridis_0.6.2         
+ [67] cowplot_1.1.1          ggrepel_0.9.3          fs_1.5.2              
+ [70] magrittr_2.0.3         data.table_1.14.8      whisker_0.4.1         
+ [73] ggnewscale_0.4.8       hms_1.1.2              patchwork_1.1.2       
+ [76] evaluate_0.20          xtable_1.8-4           HDO.db_0.99.1         
+ [79] XML_3.99-0.13          gridExtra_2.3          compiler_4.2.3        
+ [82] crayon_1.5.2           shadowtext_0.1.2       R.oo_1.25.0           
+ [85] htmltools_0.5.4        ggfun_0.0.9            later_1.3.0           
+ [88] tzdb_0.3.0             snow_0.4-4             geneplotter_1.76.0    
+ [91] aplot_0.1.9            DBI_1.1.3              tweenr_2.0.2          
+ [94] MASS_7.3-58.2          Matrix_1.5-3           car_3.1-1             
+ [97] cli_3.6.0              R.methodsS3_1.8.2      parallel_4.2.3        
+[100] igraph_1.4.0           pkgconfig_2.0.3        getPass_0.2-2         
+[103] xml2_1.3.3             ggtree_3.6.2           annotate_1.76.0       
+[106] bslib_0.4.2            XVector_0.38.0         yulab.utils_0.0.6     
+[109] callr_3.7.3            digest_0.6.29          Biostrings_2.66.0     
+[112] rmarkdown_2.20         fastmatch_1.1-3        tidytree_0.4.2        
+[115] edgeR_3.40.2           curl_5.0.0             lifecycle_1.0.3       
+[118] jsonlite_1.8.4         carData_3.0-5          viridisLite_0.4.1     
+[121] limma_3.54.1           fansi_1.0.4            pillar_1.8.1          
+[124] lattice_0.20-45        KEGGREST_1.38.0        fastmap_1.1.0         
+[127] httr_1.4.4             survival_3.5-3         glue_1.6.2            
+[130] png_0.1-8              bit_4.0.5              ggforce_0.4.1         
+[133] stringi_1.7.8          sass_0.4.5             blob_1.2.3            
+[136] memoise_2.0.1          ape_5.7               </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
