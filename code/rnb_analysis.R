@@ -111,9 +111,26 @@ head(detail_regions, n = 2)
 
 anno <- CNV.create_anno(array_type = "450k", exclude_regions = exclude_regions, detail_regions = detail_regions)
 
-x <- CNV.fit(as.data.frame(intensity), as.data.frame(intensity_control), anno)
+x <- CNV.fit( query = cnv.data[1], ref=cnv.data[7:9], anno)
 
 x <- CNV.bin(x)
 x <- CNV.detail(x)
 x <- CNV.segment(x)
 
+CNV.genomeplot(x)
+
+CNV.genomeplot(x, chr = "chr6")
+CNV.detailplot(x, name = "PTEN")
+CNV.detailplot_wrap(x)
+
+x <- CNV.fit( query = cnv.data[2], ref=cnv.data[7:9], anno)
+
+x <- CNV.bin(x)
+x <- CNV.detail(x)
+x <- CNV.segment(x)
+
+CNV.genomeplot(x)
+
+CNV.genomeplot(x, chr = "chr6")
+CNV.detailplot(x, name = "PTEN")
+CNV.detailplot_wrap(x)
