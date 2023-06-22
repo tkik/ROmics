@@ -463,15 +463,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree301865dc91e7bed553eedaeab270ed0f79a635fbtargetblank301865da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree6583b3571cb24546ccd03828d2ab8f258e89d1c4targetblank6583b35a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/tkik/ROmics/tree/301865dc91e7bed553eedaeab270ed0f79a635fb" target="_blank">301865d</a>
+<a href="https://github.com/tkik/ROmics/tree/6583b3571cb24546ccd03828d2ab8f258e89d1c4" target="_blank">6583b35</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree301865dc91e7bed553eedaeab270ed0f79a635fbtargetblank301865da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree6583b3571cb24546ccd03828d2ab8f258e89d1c4targetblank6583b35a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -481,7 +481,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/tkik/ROmics/tree/301865dc91e7bed553eedaeab270ed0f79a635fb" target="_blank">301865d</a>.
+<a href="https://github.com/tkik/ROmics/tree/6583b3571cb24546ccd03828d2ab8f258e89d1c4" target="_blank">6583b35</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -511,9 +511,7 @@ Untracked files:
     Untracked:  output/diffmeth/
 
 Unstaged changes:
-    Modified:   analysis/GRanges.Rmd
     Modified:   analysis/reproducible_programming.Rmd
-    Modified:   code/region_annotation_function.R
 
 </code></pre>
 <p>
@@ -564,6 +562,41 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/tkik/ROmics/blob/6583b3571cb24546ccd03828d2ab8f258e89d1c4/analysis/methylation_plots.Rmd" target="_blank">6583b35</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+<td>
+wflow_publish(c("analysis/methylation_plots.Rmd",
+"analysis/GRanges.Rmd"))
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/tkik/ROmics/52012d3567a3d496cea91009956eb437d31d1978/docs/methylation_plots.html" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/tkik/ROmics/blob/301865dc91e7bed553eedaeab270ed0f79a635fb/analysis/methylation_plots.Rmd" target="_blank">301865d</a>
 </td>
 <td>
@@ -583,401 +616,29 @@ wflow_publish("analysis/methylation_plots.Rmd")
 </div>
 </div>
 </div>
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<pre class="r"><code>library(RnBeads)</code></pre>
-<pre><code>Loading required package: BiocGenerics</code></pre>
-<pre><code>
-Attaching package: &#39;BiocGenerics&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:stats&#39;:
-
-    IQR, mad, sd, var, xtabs</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
-    table, tapply, union, unique, unsplit, which.max, which.min</code></pre>
-<pre><code>Loading required package: S4Vectors</code></pre>
-<pre><code>Loading required package: stats4</code></pre>
-<pre><code>
-Attaching package: &#39;S4Vectors&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    expand.grid, I, unname</code></pre>
-<pre><code>Loading required package: GenomicRanges</code></pre>
-<pre><code>Loading required package: IRanges</code></pre>
-<pre><code>
-Attaching package: &#39;IRanges&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:grDevices&#39;:
-
-    windows</code></pre>
-<pre><code>Loading required package: GenomeInfoDb</code></pre>
-<pre><code>Loading required package: MASS</code></pre>
-<pre><code>Loading required package: cluster</code></pre>
-<pre><code>Loading required package: ff</code></pre>
-<pre><code>Loading required package: bit</code></pre>
-<pre><code>
-Attaching package: &#39;bit&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:base&#39;:
-
-    xor</code></pre>
-<pre><code>Attaching package ff</code></pre>
-<pre><code>- getOption(&quot;fftempdir&quot;)==&quot;C:/Users/rtoth/AppData/Local/Temp/Rtmp2NNmid/ff&quot;</code></pre>
-<pre><code>- getOption(&quot;ffextension&quot;)==&quot;ff&quot;</code></pre>
-<pre><code>- getOption(&quot;ffdrop&quot;)==TRUE</code></pre>
-<pre><code>- getOption(&quot;fffinonexit&quot;)==TRUE</code></pre>
-<pre><code>- getOption(&quot;ffpagesize&quot;)==65536</code></pre>
-<pre><code>- getOption(&quot;ffcaching&quot;)==&quot;mmnoflush&quot;  -- consider &quot;ffeachflush&quot; if your system stalls on large writes</code></pre>
-<pre><code>- getOption(&quot;ffbatchbytes&quot;)==16777216 -- consider a different value for tuning your system</code></pre>
-<pre><code>- getOption(&quot;ffmaxbytes&quot;)==536870912 -- consider a different value for tuning your system</code></pre>
-<pre><code>
-Attaching package: &#39;ff&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:utils&#39;:
-
-    write.csv, write.csv2</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    is.factor, is.ordered</code></pre>
-<pre><code>Loading required package: fields</code></pre>
-<pre><code>Loading required package: spam</code></pre>
-<pre><code>Spam version 2.9-1 (2022-08-07) is loaded.
-Type &#39;help( Spam)&#39; or &#39;demo( spam)&#39; for a short introduction 
-and overview of this package.
-Help for individual functions is also obtained by adding the
-suffix &#39;.spam&#39; to the function name, e.g. &#39;help( chol.spam)&#39;.</code></pre>
-<pre><code>
-Attaching package: &#39;spam&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:stats4&#39;:
-
-    mle</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    backsolve, forwardsolve</code></pre>
-<pre><code>Loading required package: viridis</code></pre>
-<pre><code>Loading required package: viridisLite</code></pre>
-<pre><code>
-Try help(fields) to get started.</code></pre>
-<pre><code>Loading required package: ggplot2</code></pre>
-<pre><code>Loading required package: gplots</code></pre>
-<pre><code>
-Attaching package: &#39;gplots&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:IRanges&#39;:
-
-    space</code></pre>
-<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
-
-    space</code></pre>
-<pre><code>The following object is masked from &#39;package:stats&#39;:
-
-    lowess</code></pre>
-<pre><code>Loading required package: grid</code></pre>
-<pre><code>
-Attaching package: &#39;grid&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:ff&#39;:
-
-    pattern</code></pre>
-<pre><code>Loading required package: gridExtra</code></pre>
-<pre><code>
-Attaching package: &#39;gridExtra&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
-
-    combine</code></pre>
-<pre><code>Loading required package: limma</code></pre>
-<pre><code>
-Attaching package: &#39;limma&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
-
-    plotMA</code></pre>
-<pre><code>Loading required package: matrixStats</code></pre>
-<pre><code>Loading required package: illuminaio</code></pre>
-<pre><code>Loading required package: methylumi</code></pre>
-<pre><code>Loading required package: Biobase</code></pre>
-<pre><code>Welcome to Bioconductor
-
-    Vignettes contain introductory material; view with
-    &#39;browseVignettes()&#39;. To cite Bioconductor, see
-    &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<pre><code>
-Attaching package: &#39;Biobase&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:matrixStats&#39;:
-
-    anyMissing, rowMedians</code></pre>
-<pre><code>Loading required package: scales</code></pre>
-<pre><code>
-Attaching package: &#39;scales&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:viridis&#39;:
-
-    viridis_pal</code></pre>
-<pre><code>Loading required package: reshape2</code></pre>
-<pre><code>Loading required package: FDb.InfiniumMethylation.hg19</code></pre>
-<pre><code>Loading required package: GenomicFeatures</code></pre>
-<pre><code>Loading required package: AnnotationDbi</code></pre>
-<pre><code>
-Attaching package: &#39;AnnotationDbi&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:MASS&#39;:
-
-    select</code></pre>
-<pre><code>Loading required package: TxDb.Hsapiens.UCSC.hg19.knownGene</code></pre>
-<pre><code>Loading required package: org.Hs.eg.db</code></pre>
-<pre><code></code></pre>
-<pre><code>Loading required package: minfi</code></pre>
-<pre><code>Loading required package: SummarizedExperiment</code></pre>
-<pre><code>Loading required package: MatrixGenerics</code></pre>
-<pre><code>
-Attaching package: &#39;MatrixGenerics&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:Biobase&#39;:
-
-    rowMedians</code></pre>
-<pre><code>The following objects are masked from &#39;package:matrixStats&#39;:
-
-    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
-    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
-    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
-    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
-    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
-    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
-    colWeightedMeans, colWeightedMedians, colWeightedSds,
-    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
-    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
-    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
-    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
-    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
-    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
-    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
-    rowWeightedSds, rowWeightedVars</code></pre>
-<pre><code>Loading required package: Biostrings</code></pre>
-<pre><code>Loading required package: XVector</code></pre>
-<pre><code>
-Attaching package: &#39;Biostrings&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:grid&#39;:
-
-    pattern</code></pre>
-<pre><code>The following objects are masked from &#39;package:ff&#39;:
-
-    mismatch, pattern</code></pre>
-<pre><code>The following object is masked from &#39;package:base&#39;:
-
-    strsplit</code></pre>
-<pre><code>Loading required package: bumphunter</code></pre>
-<pre><code>Loading required package: foreach</code></pre>
-<pre><code>Loading required package: iterators</code></pre>
-<pre><code>Loading required package: parallel</code></pre>
-<pre><code>Loading required package: locfit</code></pre>
-<pre><code>locfit 1.5-9.7   2023-01-02</code></pre>
-<pre><code>Setting options(&#39;download.file.method.GEOquery&#39;=&#39;auto&#39;)</code></pre>
-<pre><code>Setting options(&#39;GEOquery.inmemory.gpl&#39;=FALSE)</code></pre>
-<pre><code>Loading required package: plyr</code></pre>
-<pre><code>
-Attaching package: &#39;plyr&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:XVector&#39;:
-
-    compact</code></pre>
-<pre><code>The following object is masked from &#39;package:matrixStats&#39;:
-
-    count</code></pre>
-<pre><code>The following object is masked from &#39;package:IRanges&#39;:
-
-    desc</code></pre>
-<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
-
-    rename</code></pre>
-<pre class="r"><code>library(ggplot2)
-library(ggfortify)</code></pre>
-<pre><code>
-Attaching package: &#39;ggfortify&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:fields&#39;:
-
-    unscale</code></pre>
-<pre class="r"><code>library(ggsci)
+<pre class="r"><code>library(RnBeads)
+library(ggplot2)
+library(ggfortify)
+library(ggsci)
 library(ggrepel)
 library(ggrastr)
-library(ComplexHeatmap)</code></pre>
-<pre><code>========================================
-ComplexHeatmap version 2.14.0
-Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
-Github page: https://github.com/jokergoo/ComplexHeatmap
-Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
-
-If you use it in published research, please cite either one:
-- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
-- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
-    genomic data. Bioinformatics 2016.
-
-
-The new InteractiveComplexHeatmap package can directly export static 
-complex heatmaps into an interactive Shiny app with zero effort. Have a try!
-
-This message can be suppressed by:
-  suppressPackageStartupMessages(library(ComplexHeatmap))
-========================================</code></pre>
-<pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>
-Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:plyr&#39;:
-
-    arrange, count, desc, failwith, id, mutate, rename, summarise,
-    summarize</code></pre>
-<pre><code>The following object is masked from &#39;package:methylumi&#39;:
-
-    combine</code></pre>
-<pre><code>The following object is masked from &#39;package:minfi&#39;:
-
-    combine</code></pre>
-<pre><code>The following objects are masked from &#39;package:Biostrings&#39;:
-
-    collapse, intersect, setdiff, setequal, union</code></pre>
-<pre><code>The following object is masked from &#39;package:XVector&#39;:
-
-    slice</code></pre>
-<pre><code>The following object is masked from &#39;package:AnnotationDbi&#39;:
-
-    select</code></pre>
-<pre><code>The following object is masked from &#39;package:Biobase&#39;:
-
-    combine</code></pre>
-<pre><code>The following object is masked from &#39;package:matrixStats&#39;:
-
-    count</code></pre>
-<pre><code>The following object is masked from &#39;package:gridExtra&#39;:
-
-    combine</code></pre>
-<pre><code>The following object is masked from &#39;package:bit&#39;:
-
-    symdiff</code></pre>
-<pre><code>The following object is masked from &#39;package:MASS&#39;:
-
-    select</code></pre>
-<pre><code>The following objects are masked from &#39;package:GenomicRanges&#39;:
-
-    intersect, setdiff, union</code></pre>
-<pre><code>The following object is masked from &#39;package:GenomeInfoDb&#39;:
-
-    intersect</code></pre>
-<pre><code>The following objects are masked from &#39;package:IRanges&#39;:
-
-    collapse, desc, intersect, setdiff, slice, union</code></pre>
-<pre><code>The following objects are masked from &#39;package:S4Vectors&#39;:
-
-    first, intersect, rename, setdiff, setequal, union</code></pre>
-<pre><code>The following objects are masked from &#39;package:BiocGenerics&#39;:
-
-    combine, intersect, setdiff, union</code></pre>
-<pre><code>The following objects are masked from &#39;package:stats&#39;:
-
-    filter, lag</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(circlize)</code></pre>
-<pre><code>========================================
-circlize version 0.4.15
-CRAN page: https://cran.r-project.org/package=circlize
-Github page: https://github.com/jokergoo/circlize
-Documentation: https://jokergoo.github.io/circlize_book/book/
-
-If you use it in published research, please cite:
-Gu, Z. circlize implements and enhances circular visualization
-  in R. Bioinformatics 2014.
-
-This message can be suppressed by:
-  suppressPackageStartupMessages(library(circlize))
-========================================</code></pre>
-<pre class="r"><code>library(tibble)
-library(clusterProfiler)</code></pre>
-<pre><code></code></pre>
-<pre><code>clusterProfiler v4.6.2  For help: https://yulab-smu.top/biomedical-knowledge-mining-book/
-
-If you use clusterProfiler in published research, please cite:
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141</code></pre>
-<pre><code>
-Attaching package: &#39;clusterProfiler&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:plyr&#39;:
-
-    arrange, mutate, rename, summarise</code></pre>
-<pre><code>The following object is masked from &#39;package:XVector&#39;:
-
-    slice</code></pre>
-<pre><code>The following object is masked from &#39;package:AnnotationDbi&#39;:
-
-    select</code></pre>
-<pre><code>The following object is masked from &#39;package:MASS&#39;:
-
-    select</code></pre>
-<pre><code>The following object is masked from &#39;package:IRanges&#39;:
-
-    slice</code></pre>
-<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
-
-    rename</code></pre>
-<pre><code>The following object is masked from &#39;package:stats&#39;:
-
-    filter</code></pre>
-<pre class="r"><code>library(ChIPseeker)</code></pre>
-<pre><code>ChIPseeker v1.34.1  For help: https://guangchuangyu.github.io/software/ChIPseeker
-
-If you use ChIPseeker in published research, please cite:
-Qianwen Wang, Ming Li, Tianzhi Wu, Li Zhan, Lin Li, Meijun Chen, Wenqin Xie, Zijing Xie, Erqiang Hu, Shuangbin Xu, Guangchuang Yu. Exploring epigenomic datasets by ChIPseeker. Current Protocols 2022, 2(10): e585</code></pre>
-<pre><code>
-Attaching package: &#39;ChIPseeker&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:plyr&#39;:
-
-    .</code></pre>
-<pre class="r"><code>library(annotatr)
+library(ComplexHeatmap)
+library(dplyr)
+library(circlize)
+library(tibble)
+library(clusterProfiler)
+library(ChIPseeker)
+library(annotatr)
 library(rtracklayer)
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
-library(org.Mm.eg.db)</code></pre>
-<pre><code></code></pre>
-<pre class="r"><code>library(DOSE)</code></pre>
-<pre><code>DOSE v3.24.2  For help: https://yulab-smu.top/biomedical-knowledge-mining-book/
+library(org.Mm.eg.db)
+library(DOSE)
+library(enrichplot)
+library(plotly)
+library(ReactomePA)
 
-If you use DOSE in published research, please cite:
-Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015, 31(4):608-609</code></pre>
-<pre class="r"><code>library(enrichplot)
-library(plotly)</code></pre>
-<pre><code>
-Attaching package: &#39;plotly&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:rtracklayer&#39;:
 
-    export</code></pre>
-<pre><code>The following object is masked from &#39;package:ComplexHeatmap&#39;:
-
-    add_heatmap</code></pre>
-<pre><code>The following objects are masked from &#39;package:plyr&#39;:
-
-    arrange, mutate, rename, summarise</code></pre>
-<pre><code>The following object is masked from &#39;package:XVector&#39;:
-
-    slice</code></pre>
-<pre><code>The following object is masked from &#39;package:AnnotationDbi&#39;:
-
-    select</code></pre>
-<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
-
-    last_plot</code></pre>
-<pre><code>The following object is masked from &#39;package:MASS&#39;:
-
-    select</code></pre>
-<pre><code>The following object is masked from &#39;package:IRanges&#39;:
-
-    slice</code></pre>
-<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
-
-    rename</code></pre>
-<pre><code>The following object is masked from &#39;package:stats&#39;:
-
-    filter</code></pre>
-<pre><code>The following object is masked from &#39;package:graphics&#39;:
-
-    layout</code></pre>
-<pre class="r"><code>library(ReactomePA)</code></pre>
-<pre><code>ReactomePA v1.42.0  For help: https://yulab-smu.top/biomedical-knowledge-mining-book/
-
-If you use ReactomePA in published research, please cite:
-Guangchuang Yu, Qing-Yu He. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. Molecular BioSystems 2016, 12(2):477-479</code></pre>
-<pre class="r"><code>rnb.options(identifiers.column=&quot;Sample_ID&quot;,
+rnb.options(identifiers.column=&quot;Sample_ID&quot;,
             disk.dump.big.matrices = FALSE)
 
 mypal = pal_d3(&quot;category20&quot;)(20)
@@ -989,24 +650,21 @@ Cellpaper &lt;- c(&quot;#313695&quot;,&quot;#4575b4&quot;, &quot;#74add1&quot;, 
 rnb.set &lt;- readRDS(&quot;data/normalized_rnb.set.RDS&quot;)
 
 source(file.path(&quot;code&quot;, &quot;region_annotation_function.R&quot;))</code></pre>
-<pre class="r"><code>pr.res &lt;- rnb.execute.dreduction(rnb.set)</code></pre>
-<pre><code>Calculated MDS coordinates using manhattan distance</code></pre>
-<pre><code>Calculated MDS coordinates using euclidean distance</code></pre>
-<pre><code>Removed 756 loci ( sites ) because they contain missing values</code></pre>
-<pre class="r"><code>results &lt;- as.data.frame(cbind(pr.res$pca$x, anno = pheno(rnb.set)))
+<pre class="r"><code>pr.res &lt;- rnb.execute.dreduction(rnb.set)
+
+results &lt;- as.data.frame(cbind(pr.res$pca$x, anno = pheno(rnb.set)))
 
 
 
 ggplotly(ggplot(results)+geom_point(aes(PC1, PC2, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle=&quot;PC1 vs. PC2&quot;)</code></pre>
 <div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-6c99bb2adfb6e908ed60" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-6c99bb2adfb6e908ed60">{"x":{"data":[{"x":[115.21677817082249],"y":[3.2302376516044728],"text":"PC1:  115.2168<br />PC2:   3.230238<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[125.26324751458257],"y":[16.359666860912945],"text":"PC1:  125.2632<br />PC2:  16.359667<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[107.28502562190259],"y":[-21.093150136349671],"text":"PC1:  107.2850<br />PC2: -21.093150<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-113.37825106359136],"y":[2.0162577330520488],"text":"PC1: -113.3783<br />PC2:   2.016258<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-114.29626321301471],"y":[1.4718763148683287],"text":"PC1: -114.2963<br />PC2:   1.471876<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-120.0905370306934],"y":[-1.9848884240884193],"text":"PC1: -120.0905<br />PC2:  -1.984888<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-132.3582262579572,137.53093674184638],"tickmode":"array","ticktext":["-100","-50","0","50","100"],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":["-100","-50","0","50","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC1","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-22.965790986212802,18.232307710776077],"tickmode":"array","ticktext":["-20","-10","0","10"],"tickvals":[-20,-10.000000000000002,0,10],"categoryorder":"array","categoryarray":["-20","-10","0","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC2","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"9cc4436d3903":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"9cc4436d3903","visdat":{"9cc4436d3903":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-6c99bb2adfb6e908ed60">{"x":{"data":[{"x":[115.21677817082249],"y":[3.2302376516044728],"text":"PC1:  115.2168<br />PC2:   3.230238<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[125.26324751458257],"y":[16.359666860912945],"text":"PC1:  125.2632<br />PC2:  16.359667<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[107.28502562190259],"y":[-21.093150136349671],"text":"PC1:  107.2850<br />PC2: -21.093150<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-113.37825106359136],"y":[2.0162577330520488],"text":"PC1: -113.3783<br />PC2:   2.016258<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-114.29626321301471],"y":[1.4718763148683287],"text":"PC1: -114.2963<br />PC2:   1.471876<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-120.0905370306934],"y":[-1.9848884240884193],"text":"PC1: -120.0905<br />PC2:  -1.984888<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-132.3582262579572,137.53093674184638],"tickmode":"array","ticktext":["-100","-50","0","50","100"],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":["-100","-50","0","50","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC1","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-22.965790986212802,18.232307710776077],"tickmode":"array","ticktext":["-20","-10","0","10"],"tickvals":[-20,-10.000000000000002,0,10],"categoryorder":"array","categoryarray":["-20","-10","0","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC2","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"87703048486b":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"87703048486b","visdat":{"87703048486b":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>ggplotly(ggplot(results)+geom_point(aes(PC2, PC3, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle=&quot;PC2 vs. PC3&quot;)</code></pre>
 <div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-a876fdaeb47d1edf16a6" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-a876fdaeb47d1edf16a6">{"x":{"data":[{"x":[3.2302376516044728],"y":[4.8639941368536341],"text":"PC2:   3.230238<br />PC3:  4.8639941<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[16.359666860912945],"y":[-4.0112004820523364],"text":"PC2:  16.359667<br />PC3: -4.0112005<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-21.093150136349671],"y":[-0.92992144217359374],"text":"PC2: -21.093150<br />PC3: -0.9299214<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2.0162577330520488],"y":[6.0986410004977207],"text":"PC2:   2.016258<br />PC3:  6.0986410<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.4718763148683287],"y":[1.7492107539614812],"text":"PC2:   1.471876<br />PC3:  1.7492108<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-1.9848884240884193],"y":[-7.7707239670867203],"text":"PC2:  -1.984888<br />PC3: -7.7707240<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-22.965790986212802,18.232307710776077],"tickmode":"array","ticktext":["-20","-10","0","10"],"tickvals":[-20,-10.000000000000002,0,10],"categoryorder":"array","categoryarray":["-20","-10","0","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC2","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-8.4641922154659426,6.792109248876943],"tickmode":"array","ticktext":["-8","-4","0","4"],"tickvals":[-8,-4,0,4],"categoryorder":"array","categoryarray":["-8","-4","0","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC3","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"9cc41a5a3c12":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"9cc41a5a3c12","visdat":{"9cc41a5a3c12":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-a876fdaeb47d1edf16a6">{"x":{"data":[{"x":[3.2302376516044728],"y":[4.8639941368536341],"text":"PC2:   3.230238<br />PC3:  4.8639941<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[16.359666860912945],"y":[-4.0112004820523364],"text":"PC2:  16.359667<br />PC3: -4.0112005<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-21.093150136349671],"y":[-0.92992144217359374],"text":"PC2: -21.093150<br />PC3: -0.9299214<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2.0162577330520488],"y":[6.0986410004977207],"text":"PC2:   2.016258<br />PC3:  6.0986410<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.4718763148683287],"y":[1.7492107539614812],"text":"PC2:   1.471876<br />PC3:  1.7492108<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-1.9848884240884193],"y":[-7.7707239670867203],"text":"PC2:  -1.984888<br />PC3: -7.7707240<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-22.965790986212802,18.232307710776077],"tickmode":"array","ticktext":["-20","-10","0","10"],"tickvals":[-20,-10.000000000000002,0,10],"categoryorder":"array","categoryarray":["-20","-10","0","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC2","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-8.4641922154659426,6.792109248876943],"tickmode":"array","ticktext":["-8","-4","0","4"],"tickvals":[-8,-4,0,4],"categoryorder":"array","categoryarray":["-8","-4","0","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC3","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"8770402110c1":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"8770402110c1","visdat":{"8770402110c1":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>ggplotly(ggplot(results)+geom_point(aes(PC1, PC3, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle=&quot;PC1 vs. PC3&quot;)</code></pre>
 <div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-869f15249ea0b0959610" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-869f15249ea0b0959610">{"x":{"data":[{"x":[115.21677817082249],"y":[4.8639941368536341],"text":"PC1:  115.2168<br />PC3:  4.8639941<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[125.26324751458257],"y":[-4.0112004820523364],"text":"PC1:  125.2632<br />PC3: -4.0112005<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[107.28502562190259],"y":[-0.92992144217359374],"text":"PC1:  107.2850<br />PC3: -0.9299214<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-113.37825106359136],"y":[6.0986410004977207],"text":"PC1: -113.3783<br />PC3:  6.0986410<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-114.29626321301471],"y":[1.7492107539614812],"text":"PC1: -114.2963<br />PC3:  1.7492108<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-120.0905370306934],"y":[-7.7707239670867203],"text":"PC1: -120.0905<br />PC3: -7.7707240<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-132.3582262579572,137.53093674184638],"tickmode":"array","ticktext":["-100","-50","0","50","100"],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":["-100","-50","0","50","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC1","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-8.4641922154659426,6.792109248876943],"tickmode":"array","ticktext":["-8","-4","0","4"],"tickvals":[-8,-4,0,4],"categoryorder":"array","categoryarray":["-8","-4","0","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC3","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"9cc437034d":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"9cc437034d","visdat":{"9cc437034d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
+<script type="application/json" data-for="htmlwidget-869f15249ea0b0959610">{"x":{"data":[{"x":[115.21677817082249],"y":[4.8639941368536341],"text":"PC1:  115.2168<br />PC3:  4.8639941<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[125.26324751458257],"y":[-4.0112004820523364],"text":"PC1:  125.2632<br />PC3: -4.0112005<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[107.28502562190259],"y":[-0.92992144217359374],"text":"PC1:  107.2850<br />PC3: -0.9299214<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-113.37825106359136],"y":[6.0986410004977207],"text":"PC1: -113.3783<br />PC3:  6.0986410<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-114.29626321301471],"y":[1.7492107539614812],"text":"PC1: -114.2963<br />PC3:  1.7492108<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-120.0905370306934],"y":[-7.7707239670867203],"text":"PC1: -120.0905<br />PC3: -7.7707240<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-132.3582262579572,137.53093674184638],"tickmode":"array","ticktext":["-100","-50","0","50","100"],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":["-100","-50","0","50","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC1","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-8.4641922154659426,6.792109248876943],"tickmode":"array","ticktext":["-8","-4","0","4"],"tickvals":[-8,-4,0,4],"categoryorder":"array","categoryarray":["-8","-4","0","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC3","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"87704d4e7e57":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"87704d4e7e57","visdat":{"87704d4e7e57":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <div id="annotation-of-differentially-methylated-sites"
 class="section level2">
 <h2>Annotation of differentially methylated sites</h2>
@@ -1039,6 +697,43 @@ result &lt;- cbind(as.data.frame(RnBeads::annotation(rnb.set)), result)
   
   p</code></pre>
 <p><img src="figure/methylation_plots.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-3-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>anno &lt;- pheno(rnb.set)
 rownames(anno) &lt;- anno$Sample_ID
 
@@ -1053,29 +748,135 @@ plot_mat &lt;- plot_mat[sample(1:nrow(plot_mat), 20000),]
    
 p </code></pre>
 <p><img src="figure/methylation_plots.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-4-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>data &lt;- list()
 data[[&quot;hypo&quot;]]  &lt;- makeGRangesFromDataFrame(result[result$Type==&quot;Hypomethylated&quot;,], keep.extra.columns = T)
 data[[&quot;hyper&quot;]]&lt;- makeGRangesFromDataFrame(result[result$Type==&quot;Hypermethylated&quot;,], keep.extra.columns = T)
 
 
 annots = c(&#39;hg19_Hepg2-chromatin&#39;)
-annots_gr = build_annotations(genome = &#39;hg19&#39;, annotations = annots)</code></pre>
-<pre><code>Building hmms...</code></pre>
-<pre><code>Downloading chromHMM track for Hepg2</code></pre>
-<pre class="r"><code>for (dataset in data){
+annots_gr = build_annotations(genome = &#39;hg19&#39;, annotations = annots)
+
+
+for (dataset in data){
 genome(dataset) &lt;- rep(&quot;hg19&quot;, length(genome(dataset)))
 result &lt;- annotate_regions(dataset, annotations=annots_gr, minoverlap = 1L, ignore.strand = TRUE, quiet = FALSE)
 rnd_annots = annotate_regions(regions = randomize_regions(dataset),annotations = annots_gr,ignore.strand = TRUE)
 p_annots = plot_annotation(annotated_regions = result, annotated_random = rnd_annots)
 print(p_annots+ggtitle(dataset))
 }</code></pre>
-<pre><code>Annotating...</code></pre>
-<pre><code>Randomizing regions...</code></pre>
-<pre><code>Annotating...
-Annotating...</code></pre>
-<pre><code>Randomizing regions...</code></pre>
-<pre><code>Annotating...</code></pre>
-<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-5-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-5-2.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>background &lt;-  makeGRangesFromDataFrame(as.data.frame(RnBeads::annotation(rnb.set)))
 genome(background) &lt;- rep(&quot;hg19&quot;, length(genome(background)))
 
@@ -1088,11 +889,82 @@ rnd_annots = annotate_regions(regions = background2,annotations = annots_gr,igno
 p_annots = plot_annotation(annotated_regions = result, annotated_random = rnd_annots)
 print(p_annots+ggtitle(dataset))
 }</code></pre>
-<pre><code>Annotating...
-Annotating...
-Annotating...
-Annotating...</code></pre>
-<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-5-3.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-4">
+Past versions of unnamed-chunk-5-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-5-4.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>## loading packages
 txdb &lt;- TxDb.Hsapiens.UCSC.hg19.knownGene
 hs &lt;- org.Hs.eg.db
@@ -1112,39 +984,174 @@ for (i in 1:length(peakAnnoList)) {
 
 plotAnnoBar(peakAnnoList)</code></pre>
 <p><img src="figure/methylation_plots.Rmd/location-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-location-1">
+Past versions of location-1.png
+</button>
+</p>
+<div id="fig-location-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/location-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>   cat(&quot;\n&quot;)</code></pre>
 <pre class="r"><code>print(plotDistToTSS(peakAnnoList,
               title=&quot;Distribution of DMLs\nrelative to TSS&quot;))</code></pre>
 <p><img src="figure/methylation_plots.Rmd/location-2.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-location-2">
+Past versions of location-2.png
+</button>
+</p>
+<div id="fig-location-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/location-2.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>   cat(&quot;\n&quot;)</code></pre>
 <pre class="r"><code>dmls &lt;- list()
 dmls[[&quot;DKO_vs_WT&quot;]] &lt;- data
 names(dmls[[&quot;DKO_vs_WT&quot;]]) &lt;- c(&quot;up&quot;, &quot;down&quot;)
   
 plots &lt;-  region_annotation_function(dmrs = dmls, annots_gr = annots_gr, genome = &quot;hg19&quot;, background = background)</code></pre>
-<pre><code>&#39;getOption(&quot;repos&quot;)&#39; replaces Bioconductor standard repositories, see
-&#39;help(&quot;repositories&quot;, package = &quot;BiocManager&quot;)&#39; for details.
-Replacement repositories:
-    CRAN: https://cran.rstudio.com/</code></pre>
-<pre><code>The masked version of &#39;hg19&#39; is not installed. Using the unmasked version. This means that no automatic masking will be available.</code></pre>
-<pre><code>Annotating...
-Annotating...</code></pre>
-<pre><code>Counting annotation types in data and random regions</code></pre>
-<pre><code>Annotating...
-Annotating...</code></pre>
-<pre><code>Counting annotation types in data and random regions</code></pre>
 <pre><code>Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
 ℹ Please use tidy evaluation idioms with `aes()`.
 ℹ See also `vignette(&quot;ggplot2-in-packages&quot;)` for more information.
 This warning is displayed once every 8 hours.
 Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 generated.</code></pre>
-<pre><code>`summarise()` has grouped output by &#39;Comparison&#39;, &#39;direction&#39;. You can override
-using the `.groups` argument.</code></pre>
 <pre class="r"><code>print(plots[[1]])</code></pre>
 <p><img src="figure/methylation_plots.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-6-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>print(plots[[2]])</code></pre>
 <p><img src="figure/methylation_plots.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-6-2.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="density-plots"
 class="section level2 tabset tabset-fade tabset-pills">
@@ -1161,6 +1168,43 @@ g &lt;- ggplot() +
   theme_bw()+scale_fill_viridis(option = &quot;viridis&quot;, direction = 1)+xlab(&quot;Mean beta, group 1&quot;)+ylab(&quot;Mean beta, group 2&quot;) + geom_point(data=as.data.frame(res)[as.data.frame(res)$diffmeth.p.adj.fdr&lt;0.05,], mapping=aes(x= mean.g1, y= mean.g2), colour = &quot;red&quot;)
 print(g)</code></pre>
 <p><img src="figure/methylation_plots.Rmd/density-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-density-1">
+Past versions of density-1.png
+</button>
+</p>
+<div id="fig-density-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/density-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>cat(&quot;\n&quot;)</code></pre>
 </div>
 <div id="gene-set-enrichment-of-promoter-overlapping-dmls-reactome"
@@ -1168,10 +1212,9 @@ class="section level2 tabset tabset-fade tabset-pills">
 <h2 class="tabset tabset-fade tabset-pills">Gene set enrichment of
 promoter overlapping DMLs, Reactome</h2>
 <pre class="r"><code>annots = c(&#39;hg19_genes_promoters&#39;)
-annots_gr_orig = build_annotations(genome = &#39;hg19&#39;, annotations = annots)</code></pre>
-<pre><code>&#39;select()&#39; returned 1:1 mapping between keys and columns</code></pre>
-<pre><code>Building promoters...</code></pre>
-<pre class="r"><code>   regions_bg &lt;- subsetByOverlaps(annots_gr_orig, background, ignore.strand=TRUE)
+annots_gr_orig = build_annotations(genome = &#39;hg19&#39;, annotations = annots)
+
+   regions_bg &lt;- subsetByOverlaps(annots_gr_orig, background, ignore.strand=TRUE)
    
    
     regions &lt;- subsetByOverlaps(annots_gr_orig, data$hypo, ignore.strand=TRUE)
@@ -1197,7 +1240,120 @@ cat(&quot;\n&quot;)
 
 }
 }</code></pre>
-<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-7-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-7-2.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-7-3.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>cat(&quot;\n&quot;)</code></pre>
 <pre class="r"><code>    regions &lt;- subsetByOverlaps(annots_gr_orig, data$hyper, ignore.strand=TRUE)
 
@@ -1219,7 +1375,120 @@ print(p2)
 }
 cat(&quot;\n&quot;)
 }</code></pre>
-<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-4">
+Past versions of unnamed-chunk-7-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-7-4.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-5">
+Past versions of unnamed-chunk-7-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-7-5.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-6">
+Past versions of unnamed-chunk-7-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-7-6.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="gene-set-enrichment-of-promoter-overlapping-dmls-msigdb"
 class="section level2 tabset tabset-fade tabset-pills">
@@ -1250,7 +1519,82 @@ print(p)
 }
   
  }</code></pre>
-<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-8-1.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-8-2.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>    regions &lt;- subsetByOverlaps(annots_gr_orig, data$hyper, ignore.strand=TRUE)
 
     
@@ -1270,7 +1614,82 @@ print(p)
 }
   
  }</code></pre>
-<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
+Past versions of unnamed-chunk-8-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-8-3.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-4">
+Past versions of unnamed-chunk-8-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/52012d3567a3d496cea91009956eb437d31d1978/docs/figure/methylation_plots.Rmd/unnamed-chunk-8-4.png" target="_blank">52012d3</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
