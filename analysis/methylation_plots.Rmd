@@ -1,0 +1,342 @@
+---
+title: "methylation plots"
+author: "Reka_Toth"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+ # html_notebook: default
+  workflowr::wflow_html:
+    toc: false
+    code_folding: "show"
+#output: workflowr::wflow_html:
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(RnBeads)
+library(ggplot2)
+library(ggfortify)
+library(ggsci)
+library(ggrepel)
+library(ggrastr)
+library(ComplexHeatmap)
+library(dplyr)
+library(circlize)
+library(tibble)
+library(clusterProfiler)
+library(ChIPseeker)
+library(annotatr)
+library(rtracklayer)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+library(DOSE)
+library(enrichplot)
+library(plotly)
+library(ReactomePA)
+
+
+rnb.options(identifiers.column="Sample_ID",
+            disk.dump.big.matrices = FALSE)
+
+mypal = pal_d3("category20")(20)
+mypal2 <-  pal_ucscgb()(4) # for red (1), for green (4)
+continous_pal <- pal_d3("category20c")(20)
+
+Cellpaper <- c("#313695","#4575b4", "#74add1", "#abd9e9","#e0f3f8","#ffffbf","#fee090","#fdae61","#f46d43","#d73027","#a50026")
+
+rnb.set <- readRDS("data/normalized_rnb.set.RDS")
+
+source(file.path("code", "region_annotation_function.R"))
+
+```
+
+```{r}
+
+pr.res <- rnb.execute.dreduction(rnb.set)
+
+results <- as.data.frame(cbind(pr.res$pca$x, anno = pheno(rnb.set)))
+
+
+
+ggplotly(ggplot(results)+geom_point(aes(PC1, PC2, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle="PC1 vs. PC2")
+
+ggplotly(ggplot(results)+geom_point(aes(PC2, PC3, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle="PC2 vs. PC3")
+
+ggplotly(ggplot(results)+geom_point(aes(PC1, PC3, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle="PC1 vs. PC3")
+
+
+```
+
+## Annotation of differentially methylated sites 
+
+```{r}
+
+load("output/diffmeth/differential_methylation_data/differential_rnbDiffMeth/rnbDiffMeth.RData")
+result <- as.data.frame(object@sites$`DKO vs. WT (based on Sample_Group)`)
+result <- cbind(as.data.frame(RnBeads::annotation(rnb.set)), result)
+
+  result$Type <-
+    ifelse(
+      result$diffmeth.p.adj.fdr >= 0.05 |
+        abs(result$mean.diff) < 0.2,
+      "not altered",
+      ifelse(
+        result$mean.diff > 0,
+        "Hypermethylated",
+        "Hypomethylated"
+      )
+    )
+  
+  p <-
+    ggplot(result, aes(x = mean.diff, y = -log10(diffmeth.p.adj.fdr))) +
+    geom_point(aes(fill = Type, color = Type)) + theme_bw() + scale_color_manual(values = c(
+      "Hypermethylated" = alpha(mypal2[1], 0.6),
+      "Hypomethylated" = alpha(mypal2[4], 0.6),
+      "not altered" = alpha("black", 0.5)
+    )) + theme(legend.position = "none", text = element_text(size = 12)) + xlim(-1, 1) +
+    geom_vline(xintercept = c(-0.2, 0.2), linetype = "longdash") +
+    geom_hline(yintercept = c(-log10(0.05)), linetype = "longdash") + labs(x =
+                                                                             "Mean difference", y = "-log10(FDR p)", title = "DKO vs. WT")
+  
+  p
+
+```
+
+```{r}
+anno <- pheno(rnb.set)
+rownames(anno) <- anno$Sample_ID
+
+mat <- meth(rnb.set, row.names=T)
+mat <- mat[which(result$Type != "not altered"), ,drop=F] 
+
+plot_mat <- mat[complete.cases(mat),]
+if (nrow(plot_mat)>20000)
+plot_mat <- plot_mat[sample(1:nrow(plot_mat), 20000),]
+  
+  p <- pheatmap::pheatmap(plot_mat, annotation_col = anno[,c("Sample_Group", "Replicate")], colorRampPalette(Cellpaper, space = "rgb")(10), main = "DKO vs. WT", show_rownames = FALSE)
+   
+p 
+
+```
+
+```{r}
+data <- list()
+data[["hypo"]]  <- makeGRangesFromDataFrame(result[result$Type=="Hypomethylated",], keep.extra.columns = T)
+data[["hyper"]]<- makeGRangesFromDataFrame(result[result$Type=="Hypermethylated",], keep.extra.columns = T)
+
+
+annots = c('hg19_Hepg2-chromatin')
+annots_gr = build_annotations(genome = 'hg19', annotations = annots)
+
+
+for (dataset in data){
+genome(dataset) <- rep("hg19", length(genome(dataset)))
+result <- annotate_regions(dataset, annotations=annots_gr, minoverlap = 1L, ignore.strand = TRUE, quiet = FALSE)
+rnd_annots = annotate_regions(regions = randomize_regions(dataset),annotations = annots_gr,ignore.strand = TRUE)
+p_annots = plot_annotation(annotated_regions = result, annotated_random = rnd_annots)
+print(p_annots+ggtitle(dataset))
+}
+
+background <-  makeGRangesFromDataFrame(as.data.frame(RnBeads::annotation(rnb.set)))
+genome(background) <- rep("hg19", length(genome(background)))
+
+
+for (dataset in names(data)){
+genome(data[[dataset]]) <- rep("hg19", length(genome(data[[dataset]])))
+background2 <- background[sample(1:length(background), length(data[[dataset]])),]
+result <- annotate_regions(data[[dataset]], annotations=annots_gr, minoverlap = 1L, ignore.strand = TRUE, quiet = FALSE)
+rnd_annots = annotate_regions(regions = background2,annotations = annots_gr,ignore.strand = TRUE)
+p_annots = plot_annotation(annotated_regions = result, annotated_random = rnd_annots)
+print(p_annots+ggtitle(dataset))
+}
+
+```
+
+
+
+```{r location, message=FALSE, warning=FALSE, eval=TRUE, results='asis', fig.width=6, fig.height=5, dev=c("png", "pdf")}
+
+
+## loading packages
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+hs <- org.Hs.eg.db
+
+
+
+peakAnnoList <- lapply(data, annotatePeak, TxDb=txdb,
+                       tssRegion=c(-3000, 500), verbose=FALSE)
+
+for (i in 1:length(peakAnnoList)) {
+  peakAnnoList[[i]]@anno$symbols <- AnnotationDbi::select(hs, 
+       keys = peakAnnoList[[i]]@anno$geneId,
+       columns = c("SYMBOL"),
+       keytype = "ENTREZID")$SYMBOL
+
+}
+
+plotAnnoBar(peakAnnoList)
+  
+   cat("\n")
+   
+print(plotDistToTSS(peakAnnoList,
+              title="Distribution of DMLs\nrelative to TSS"))
+
+  
+   cat("\n")
+
+
+```
+
+
+```{r}
+dmls <- list()
+dmls[["DKO_vs_WT"]] <- data
+names(dmls[["DKO_vs_WT"]]) <- c("up", "down")
+  
+plots <-  region_annotation_function(dmrs = dmls, annots_gr = annots_gr, genome = "hg19", background = background)
+
+
+print(plots[[1]])
+print(plots[[2]])
+
+```
+
+
+## Density plots{.tabset .tabset-fade .tabset-pills}
+
+```{r density,  results='asis', fig.width=6, fig.height=5, dev=c("png", "pdf")}
+
+
+res <- as.data.frame(object@sites$`DKO vs. WT (based on Sample_Group)`)
+res <- cbind(as.data.frame(RnBeads::annotation(rnb.set)), res)
+
+g <- ggplot() +
+    theme_minimal()+scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+    theme(legend.position='none')+
+     #ggnewscale::new_scale_fill() +
+  geom_bin2d(data=as.data.frame(res), mapping=aes(x= mean.g1, y= mean.g2), bins=200) +
+  theme_bw()+scale_fill_viridis(option = "viridis", direction = 1)+xlab("Mean beta, group 1")+ylab("Mean beta, group 2") + geom_point(data=as.data.frame(res)[as.data.frame(res)$diffmeth.p.adj.fdr<0.05,], mapping=aes(x= mean.g1, y= mean.g2), colour = "red")
+print(g)
+
+cat("\n")
+
+
+
+```
+
+
+## Gene set enrichment of promoter overlapping DMLs, Reactome {.tabset .tabset-fade .tabset-pills} 
+
+```{r, results='asis'}
+
+annots = c('hg19_genes_promoters')
+annots_gr_orig = build_annotations(genome = 'hg19', annotations = annots)
+
+   regions_bg <- subsetByOverlaps(annots_gr_orig, background, ignore.strand=TRUE)
+   
+   
+    regions <- subsetByOverlaps(annots_gr_orig, data$hypo, ignore.strand=TRUE)
+    
+cat("Hypermethylated in group 2:
+    \n")
+ if (length(regions)>0){ 
+edo <- enrichPathway(gene=unique(regions$gene_id), pvalueCutoff = 0.05, readable=TRUE, organism = "human", universe = unique(regions_bg$gene_id))
+if(!is.null(edo) && sum(edo@result$p.adjust<0.05)>0){
+  edo <- mutate(edo, qscore = -log(p.adjust, base=10)) 
+  
+  p <- barplot(edo, x="qscore", showCategory=10)
+  g <- dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
+print(g)
+print(p)
+
+#edox <- setReadable(edo, 'org.Mm.eg.db', 'ENTREZID')
+
+p2 <- heatplot(edo)
+print(p2)
+cat("\n")
+
+}
+}
+
+cat("\n")
+  
+    regions <- subsetByOverlaps(annots_gr_orig, data$hyper, ignore.strand=TRUE)
+
+cat("Hypermethylated in group 1:
+    \n")
+
+ if (length(regions)>0){ 
+edo <- enrichPathway(gene=unique(regions$gene_id), pvalueCutoff = 0.05, readable=TRUE, organism = "human", universe = unique(regions_bg$gene_id))
+if(!is.null(edo) && sum(edo@result$p.adjust<0.05)>0){
+  edo <- mutate(edo, qscore = -log(p.adjust, base=10)) 
+  
+  p <- barplot(edo, x="qscore", showCategory=10)
+  g <- dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
+print(g)
+print(p)
+
+p2 <- heatplot(edo)
+print(p2)
+}
+cat("\n")
+}
+
+
+```
+
+
+## Gene set enrichment of promoter overlapping DMLs, msigDB{.tabset .tabset-fade .tabset-pills} 
+
+
+```{r, results='asis'}
+library(msigdbr)
+
+
+m_t2g <- msigdbr(species = "Homo sapiens", category = "H") %>% 
+  dplyr::select(gs_name, entrez_gene)
+
+   
+    regions <- subsetByOverlaps(annots_gr_orig, data$hypo, ignore.strand=TRUE)
+       
+cat("Hypermethylated in group 2:
+    \n")
+ if (length(regions)>0){  
+  em <- enricher(regions$gene_id, TERM2GENE=m_t2g)
+if(!is.null(em) && sum(em@result$p.adjust<0.05)>0){
+  em <- mutate(em, qscore = -log(p.adjust, base=10)) 
+  
+  p <- barplot(em, x="qscore", showCategory=10)
+  g <- dotplot(em, showCategory=30) + ggtitle("dotplot for ORA")
+print(g)
+print(p)
+  cat("\n")
+}
+  
+ }
+
+
+    regions <- subsetByOverlaps(annots_gr_orig, data$hyper, ignore.strand=TRUE)
+
+    
+cat("Hypermethylated in group 1:
+    \n")
+ if (length(regions)>0){  
+  em <- enricher(regions$gene_id, TERM2GENE=m_t2g)
+if(!is.null(em) && sum(em@result$p.adjust<0.05)>0){
+  em <- mutate(em, qscore = -log(p.adjust, base=10)) 
+  
+  p <- barplot(em, x="qscore", showCategory=10)
+  g <- dotplot(em, showCategory=30) + ggtitle("dotplot for ORA")
+print(g)
+print(p)
+  cat("\n")
+}
+  
+ }
+
+
+```
+
