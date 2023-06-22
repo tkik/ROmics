@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Reka_Toth" />
+
+
+<title>methylation plots</title>
+
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.2/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ROmics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tkik/ROmics">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">methylation plots</h1>
+<h4 class="author">Reka_Toth</h4>
+<h4 class="date">22 June, 2023</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-06-22
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ROmics/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0.4). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20230606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20230606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20230606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20230606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree301865dc91e7bed553eedaeab270ed0f79a635fbtargetblank301865da">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/tkik/ROmics/tree/301865dc91e7bed553eedaeab270ed0f79a635fb" target="_blank">301865d</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree301865dc91e7bed553eedaeab270ed0f79a635fbtargetblank301865da"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/tkik/ROmics/tree/301865dc91e7bed553eedaeab270ed0f79a635fb" target="_blank">301865d</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  Course_plans.docx
+    Untracked:  data/idat/
+    Untracked:  data/mm9_Refseq_chr12.tsv
+    Untracked:  data/normalized_rnb.set.RDS
+    Untracked:  data/raw_rnb.set.RDS
+    Untracked:  data/raw_rnbset_GSE175758.RDS
+    Untracked:  data/sample_annotation.csv
+    Untracked:  output/Genomic data.pptx
+    Untracked:  output/diffmeth/
+
+Unstaged changes:
+    Modified:   analysis/GRanges.Rmd
+    Modified:   analysis/reproducible_programming.Rmd
+    Modified:   code/region_annotation_function.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/methylation_plots.Rmd</code>) and
+HTML (<code>docs/methylation_plots.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/301865dc91e7bed553eedaeab270ed0f79a635fb/analysis/methylation_plots.Rmd" target="_blank">301865d</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-06-22
+</td>
+<td>
+wflow_publish("analysis/methylation_plots.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<pre class="r"><code>library(RnBeads)</code></pre>
+<pre><code>Loading required package: BiocGenerics</code></pre>
+<pre><code>
+Attaching package: &#39;BiocGenerics&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    IQR, mad, sd, var, xtabs</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min</code></pre>
+<pre><code>Loading required package: S4Vectors</code></pre>
+<pre><code>Loading required package: stats4</code></pre>
+<pre><code>
+Attaching package: &#39;S4Vectors&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    expand.grid, I, unname</code></pre>
+<pre><code>Loading required package: GenomicRanges</code></pre>
+<pre><code>Loading required package: IRanges</code></pre>
+<pre><code>
+Attaching package: &#39;IRanges&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:grDevices&#39;:
+
+    windows</code></pre>
+<pre><code>Loading required package: GenomeInfoDb</code></pre>
+<pre><code>Loading required package: MASS</code></pre>
+<pre><code>Loading required package: cluster</code></pre>
+<pre><code>Loading required package: ff</code></pre>
+<pre><code>Loading required package: bit</code></pre>
+<pre><code>
+Attaching package: &#39;bit&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:base&#39;:
+
+    xor</code></pre>
+<pre><code>Attaching package ff</code></pre>
+<pre><code>- getOption(&quot;fftempdir&quot;)==&quot;C:/Users/rtoth/AppData/Local/Temp/Rtmp2NNmid/ff&quot;</code></pre>
+<pre><code>- getOption(&quot;ffextension&quot;)==&quot;ff&quot;</code></pre>
+<pre><code>- getOption(&quot;ffdrop&quot;)==TRUE</code></pre>
+<pre><code>- getOption(&quot;fffinonexit&quot;)==TRUE</code></pre>
+<pre><code>- getOption(&quot;ffpagesize&quot;)==65536</code></pre>
+<pre><code>- getOption(&quot;ffcaching&quot;)==&quot;mmnoflush&quot;  -- consider &quot;ffeachflush&quot; if your system stalls on large writes</code></pre>
+<pre><code>- getOption(&quot;ffbatchbytes&quot;)==16777216 -- consider a different value for tuning your system</code></pre>
+<pre><code>- getOption(&quot;ffmaxbytes&quot;)==536870912 -- consider a different value for tuning your system</code></pre>
+<pre><code>
+Attaching package: &#39;ff&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:utils&#39;:
+
+    write.csv, write.csv2</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    is.factor, is.ordered</code></pre>
+<pre><code>Loading required package: fields</code></pre>
+<pre><code>Loading required package: spam</code></pre>
+<pre><code>Spam version 2.9-1 (2022-08-07) is loaded.
+Type &#39;help( Spam)&#39; or &#39;demo( spam)&#39; for a short introduction 
+and overview of this package.
+Help for individual functions is also obtained by adding the
+suffix &#39;.spam&#39; to the function name, e.g. &#39;help( chol.spam)&#39;.</code></pre>
+<pre><code>
+Attaching package: &#39;spam&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:stats4&#39;:
+
+    mle</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    backsolve, forwardsolve</code></pre>
+<pre><code>Loading required package: viridis</code></pre>
+<pre><code>Loading required package: viridisLite</code></pre>
+<pre><code>
+Try help(fields) to get started.</code></pre>
+<pre><code>Loading required package: ggplot2</code></pre>
+<pre><code>Loading required package: gplots</code></pre>
+<pre><code>
+Attaching package: &#39;gplots&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:IRanges&#39;:
+
+    space</code></pre>
+<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
+
+    space</code></pre>
+<pre><code>The following object is masked from &#39;package:stats&#39;:
+
+    lowess</code></pre>
+<pre><code>Loading required package: grid</code></pre>
+<pre><code>
+Attaching package: &#39;grid&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ff&#39;:
+
+    pattern</code></pre>
+<pre><code>Loading required package: gridExtra</code></pre>
+<pre><code>
+Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
+
+    combine</code></pre>
+<pre><code>Loading required package: limma</code></pre>
+<pre><code>
+Attaching package: &#39;limma&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
+
+    plotMA</code></pre>
+<pre><code>Loading required package: matrixStats</code></pre>
+<pre><code>Loading required package: illuminaio</code></pre>
+<pre><code>Loading required package: methylumi</code></pre>
+<pre><code>Loading required package: Biobase</code></pre>
+<pre><code>Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    &#39;browseVignettes()&#39;. To cite Bioconductor, see
+    &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
+<pre><code>
+Attaching package: &#39;Biobase&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:matrixStats&#39;:
+
+    anyMissing, rowMedians</code></pre>
+<pre><code>Loading required package: scales</code></pre>
+<pre><code>
+Attaching package: &#39;scales&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:viridis&#39;:
+
+    viridis_pal</code></pre>
+<pre><code>Loading required package: reshape2</code></pre>
+<pre><code>Loading required package: FDb.InfiniumMethylation.hg19</code></pre>
+<pre><code>Loading required package: GenomicFeatures</code></pre>
+<pre><code>Loading required package: AnnotationDbi</code></pre>
+<pre><code>
+Attaching package: &#39;AnnotationDbi&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:MASS&#39;:
+
+    select</code></pre>
+<pre><code>Loading required package: TxDb.Hsapiens.UCSC.hg19.knownGene</code></pre>
+<pre><code>Loading required package: org.Hs.eg.db</code></pre>
+<pre><code></code></pre>
+<pre><code>Loading required package: minfi</code></pre>
+<pre><code>Loading required package: SummarizedExperiment</code></pre>
+<pre><code>Loading required package: MatrixGenerics</code></pre>
+<pre><code>
+Attaching package: &#39;MatrixGenerics&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:Biobase&#39;:
+
+    rowMedians</code></pre>
+<pre><code>The following objects are masked from &#39;package:matrixStats&#39;:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars</code></pre>
+<pre><code>Loading required package: Biostrings</code></pre>
+<pre><code>Loading required package: XVector</code></pre>
+<pre><code>
+Attaching package: &#39;Biostrings&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:grid&#39;:
+
+    pattern</code></pre>
+<pre><code>The following objects are masked from &#39;package:ff&#39;:
+
+    mismatch, pattern</code></pre>
+<pre><code>The following object is masked from &#39;package:base&#39;:
+
+    strsplit</code></pre>
+<pre><code>Loading required package: bumphunter</code></pre>
+<pre><code>Loading required package: foreach</code></pre>
+<pre><code>Loading required package: iterators</code></pre>
+<pre><code>Loading required package: parallel</code></pre>
+<pre><code>Loading required package: locfit</code></pre>
+<pre><code>locfit 1.5-9.7   2023-01-02</code></pre>
+<pre><code>Setting options(&#39;download.file.method.GEOquery&#39;=&#39;auto&#39;)</code></pre>
+<pre><code>Setting options(&#39;GEOquery.inmemory.gpl&#39;=FALSE)</code></pre>
+<pre><code>Loading required package: plyr</code></pre>
+<pre><code>
+Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:XVector&#39;:
+
+    compact</code></pre>
+<pre><code>The following object is masked from &#39;package:matrixStats&#39;:
+
+    count</code></pre>
+<pre><code>The following object is masked from &#39;package:IRanges&#39;:
+
+    desc</code></pre>
+<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
+
+    rename</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(ggfortify)</code></pre>
+<pre><code>
+Attaching package: &#39;ggfortify&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:fields&#39;:
+
+    unscale</code></pre>
+<pre class="r"><code>library(ggsci)
+library(ggrepel)
+library(ggrastr)
+library(ComplexHeatmap)</code></pre>
+<pre><code>========================================
+ComplexHeatmap version 2.14.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:plyr&#39;:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize</code></pre>
+<pre><code>The following object is masked from &#39;package:methylumi&#39;:
+
+    combine</code></pre>
+<pre><code>The following object is masked from &#39;package:minfi&#39;:
+
+    combine</code></pre>
+<pre><code>The following objects are masked from &#39;package:Biostrings&#39;:
+
+    collapse, intersect, setdiff, setequal, union</code></pre>
+<pre><code>The following object is masked from &#39;package:XVector&#39;:
+
+    slice</code></pre>
+<pre><code>The following object is masked from &#39;package:AnnotationDbi&#39;:
+
+    select</code></pre>
+<pre><code>The following object is masked from &#39;package:Biobase&#39;:
+
+    combine</code></pre>
+<pre><code>The following object is masked from &#39;package:matrixStats&#39;:
+
+    count</code></pre>
+<pre><code>The following object is masked from &#39;package:gridExtra&#39;:
+
+    combine</code></pre>
+<pre><code>The following object is masked from &#39;package:bit&#39;:
+
+    symdiff</code></pre>
+<pre><code>The following object is masked from &#39;package:MASS&#39;:
+
+    select</code></pre>
+<pre><code>The following objects are masked from &#39;package:GenomicRanges&#39;:
+
+    intersect, setdiff, union</code></pre>
+<pre><code>The following object is masked from &#39;package:GenomeInfoDb&#39;:
+
+    intersect</code></pre>
+<pre><code>The following objects are masked from &#39;package:IRanges&#39;:
+
+    collapse, desc, intersect, setdiff, slice, union</code></pre>
+<pre><code>The following objects are masked from &#39;package:S4Vectors&#39;:
+
+    first, intersect, rename, setdiff, setequal, union</code></pre>
+<pre><code>The following objects are masked from &#39;package:BiocGenerics&#39;:
+
+    combine, intersect, setdiff, union</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(circlize)</code></pre>
+<pre><code>========================================
+circlize version 0.4.15
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================</code></pre>
+<pre class="r"><code>library(tibble)
+library(clusterProfiler)</code></pre>
+<pre><code></code></pre>
+<pre><code>clusterProfiler v4.6.2  For help: https://yulab-smu.top/biomedical-knowledge-mining-book/
+
+If you use clusterProfiler in published research, please cite:
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141</code></pre>
+<pre><code>
+Attaching package: &#39;clusterProfiler&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:plyr&#39;:
+
+    arrange, mutate, rename, summarise</code></pre>
+<pre><code>The following object is masked from &#39;package:XVector&#39;:
+
+    slice</code></pre>
+<pre><code>The following object is masked from &#39;package:AnnotationDbi&#39;:
+
+    select</code></pre>
+<pre><code>The following object is masked from &#39;package:MASS&#39;:
+
+    select</code></pre>
+<pre><code>The following object is masked from &#39;package:IRanges&#39;:
+
+    slice</code></pre>
+<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
+
+    rename</code></pre>
+<pre><code>The following object is masked from &#39;package:stats&#39;:
+
+    filter</code></pre>
+<pre class="r"><code>library(ChIPseeker)</code></pre>
+<pre><code>ChIPseeker v1.34.1  For help: https://guangchuangyu.github.io/software/ChIPseeker
+
+If you use ChIPseeker in published research, please cite:
+Qianwen Wang, Ming Li, Tianzhi Wu, Li Zhan, Lin Li, Meijun Chen, Wenqin Xie, Zijing Xie, Erqiang Hu, Shuangbin Xu, Guangchuang Yu. Exploring epigenomic datasets by ChIPseeker. Current Protocols 2022, 2(10): e585</code></pre>
+<pre><code>
+Attaching package: &#39;ChIPseeker&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:plyr&#39;:
+
+    .</code></pre>
+<pre class="r"><code>library(annotatr)
+library(rtracklayer)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)</code></pre>
+<pre><code></code></pre>
+<pre class="r"><code>library(DOSE)</code></pre>
+<pre><code>DOSE v3.24.2  For help: https://yulab-smu.top/biomedical-knowledge-mining-book/
+
+If you use DOSE in published research, please cite:
+Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015, 31(4):608-609</code></pre>
+<pre class="r"><code>library(enrichplot)
+library(plotly)</code></pre>
+<pre><code>
+Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:rtracklayer&#39;:
+
+    export</code></pre>
+<pre><code>The following object is masked from &#39;package:ComplexHeatmap&#39;:
+
+    add_heatmap</code></pre>
+<pre><code>The following objects are masked from &#39;package:plyr&#39;:
+
+    arrange, mutate, rename, summarise</code></pre>
+<pre><code>The following object is masked from &#39;package:XVector&#39;:
+
+    slice</code></pre>
+<pre><code>The following object is masked from &#39;package:AnnotationDbi&#39;:
+
+    select</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    last_plot</code></pre>
+<pre><code>The following object is masked from &#39;package:MASS&#39;:
+
+    select</code></pre>
+<pre><code>The following object is masked from &#39;package:IRanges&#39;:
+
+    slice</code></pre>
+<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
+
+    rename</code></pre>
+<pre><code>The following object is masked from &#39;package:stats&#39;:
+
+    filter</code></pre>
+<pre><code>The following object is masked from &#39;package:graphics&#39;:
+
+    layout</code></pre>
+<pre class="r"><code>library(ReactomePA)</code></pre>
+<pre><code>ReactomePA v1.42.0  For help: https://yulab-smu.top/biomedical-knowledge-mining-book/
+
+If you use ReactomePA in published research, please cite:
+Guangchuang Yu, Qing-Yu He. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. Molecular BioSystems 2016, 12(2):477-479</code></pre>
+<pre class="r"><code>rnb.options(identifiers.column=&quot;Sample_ID&quot;,
+            disk.dump.big.matrices = FALSE)
+
+mypal = pal_d3(&quot;category20&quot;)(20)
+mypal2 &lt;-  pal_ucscgb()(4) # for red (1), for green (4)
+continous_pal &lt;- pal_d3(&quot;category20c&quot;)(20)
+
+Cellpaper &lt;- c(&quot;#313695&quot;,&quot;#4575b4&quot;, &quot;#74add1&quot;, &quot;#abd9e9&quot;,&quot;#e0f3f8&quot;,&quot;#ffffbf&quot;,&quot;#fee090&quot;,&quot;#fdae61&quot;,&quot;#f46d43&quot;,&quot;#d73027&quot;,&quot;#a50026&quot;)
+
+rnb.set &lt;- readRDS(&quot;data/normalized_rnb.set.RDS&quot;)
+
+source(file.path(&quot;code&quot;, &quot;region_annotation_function.R&quot;))</code></pre>
+<pre class="r"><code>pr.res &lt;- rnb.execute.dreduction(rnb.set)</code></pre>
+<pre><code>Calculated MDS coordinates using manhattan distance</code></pre>
+<pre><code>Calculated MDS coordinates using euclidean distance</code></pre>
+<pre><code>Removed 756 loci ( sites ) because they contain missing values</code></pre>
+<pre class="r"><code>results &lt;- as.data.frame(cbind(pr.res$pca$x, anno = pheno(rnb.set)))
+
+
+
+ggplotly(ggplot(results)+geom_point(aes(PC1, PC2, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle=&quot;PC1 vs. PC2&quot;)</code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-6c99bb2adfb6e908ed60" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-6c99bb2adfb6e908ed60">{"x":{"data":[{"x":[115.21677817082249],"y":[3.2302376516044728],"text":"PC1:  115.2168<br />PC2:   3.230238<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[125.26324751458257],"y":[16.359666860912945],"text":"PC1:  125.2632<br />PC2:  16.359667<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[107.28502562190259],"y":[-21.093150136349671],"text":"PC1:  107.2850<br />PC2: -21.093150<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-113.37825106359136],"y":[2.0162577330520488],"text":"PC1: -113.3783<br />PC2:   2.016258<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-114.29626321301471],"y":[1.4718763148683287],"text":"PC1: -114.2963<br />PC2:   1.471876<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-120.0905370306934],"y":[-1.9848884240884193],"text":"PC1: -120.0905<br />PC2:  -1.984888<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-132.3582262579572,137.53093674184638],"tickmode":"array","ticktext":["-100","-50","0","50","100"],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":["-100","-50","0","50","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC1","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-22.965790986212802,18.232307710776077],"tickmode":"array","ticktext":["-20","-10","0","10"],"tickvals":[-20,-10.000000000000002,0,10],"categoryorder":"array","categoryarray":["-20","-10","0","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC2","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"9cc4436d3903":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"9cc4436d3903","visdat":{"9cc4436d3903":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>ggplotly(ggplot(results)+geom_point(aes(PC2, PC3, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle=&quot;PC2 vs. PC3&quot;)</code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-a876fdaeb47d1edf16a6" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-a876fdaeb47d1edf16a6">{"x":{"data":[{"x":[3.2302376516044728],"y":[4.8639941368536341],"text":"PC2:   3.230238<br />PC3:  4.8639941<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[16.359666860912945],"y":[-4.0112004820523364],"text":"PC2:  16.359667<br />PC3: -4.0112005<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-21.093150136349671],"y":[-0.92992144217359374],"text":"PC2: -21.093150<br />PC3: -0.9299214<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2.0162577330520488],"y":[6.0986410004977207],"text":"PC2:   2.016258<br />PC3:  6.0986410<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.4718763148683287],"y":[1.7492107539614812],"text":"PC2:   1.471876<br />PC3:  1.7492108<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-1.9848884240884193],"y":[-7.7707239670867203],"text":"PC2:  -1.984888<br />PC3: -7.7707240<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-22.965790986212802,18.232307710776077],"tickmode":"array","ticktext":["-20","-10","0","10"],"tickvals":[-20,-10.000000000000002,0,10],"categoryorder":"array","categoryarray":["-20","-10","0","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC2","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-8.4641922154659426,6.792109248876943],"tickmode":"array","ticktext":["-8","-4","0","4"],"tickvals":[-8,-4,0,4],"categoryorder":"array","categoryarray":["-8","-4","0","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC3","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"9cc41a5a3c12":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"9cc41a5a3c12","visdat":{"9cc41a5a3c12":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>ggplotly(ggplot(results)+geom_point(aes(PC1, PC3, color=anno.Sample_Group, shape=anno.Replicate), size=3)+theme_bw()+scale_color_d3(), ggtitle=&quot;PC1 vs. PC3&quot;)</code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-869f15249ea0b0959610" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-869f15249ea0b0959610">{"x":{"data":[{"x":[115.21677817082249],"y":[4.8639941368536341],"text":"PC1:  115.2168<br />PC3:  4.8639941<br />anno.Sample_Group: DKO<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r1)","legendgroup":"(DKO,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[125.26324751458257],"y":[-4.0112004820523364],"text":"PC1:  125.2632<br />PC3: -4.0112005<br />anno.Sample_Group: DKO<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r2)","legendgroup":"(DKO,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[107.28502562190259],"y":[-0.92992144217359374],"text":"PC1:  107.2850<br />PC3: -0.9299214<br />anno.Sample_Group: DKO<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(31,119,180,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(31,119,180,1)"}},"hoveron":"points","name":"(DKO,r3)","legendgroup":"(DKO,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-113.37825106359136],"y":[6.0986410004977207],"text":"PC1: -113.3783<br />PC3:  6.0986410<br />anno.Sample_Group: WT<br />anno.Replicate: r1","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r1)","legendgroup":"(WT,r1)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-114.29626321301471],"y":[1.7492107539614812],"text":"PC1: -114.2963<br />PC3:  1.7492108<br />anno.Sample_Group: WT<br />anno.Replicate: r2","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r2)","legendgroup":"(WT,r2)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-120.0905370306934],"y":[-7.7707239670867203],"text":"PC1: -120.0905<br />PC3: -7.7707240<br />anno.Sample_Group: WT<br />anno.Replicate: r3","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,127,14,1)","opacity":1,"size":11.338582677165356,"symbol":"square","line":{"width":1.8897637795275593,"color":"rgba(255,127,14,1)"}},"hoveron":"points","name":"(WT,r3)","legendgroup":"(WT,r3)","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-132.3582262579572,137.53093674184638],"tickmode":"array","ticktext":["-100","-50","0","50","100"],"tickvals":[-100,-50,0,50,100],"categoryorder":"array","categoryarray":["-100","-50","0","50","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"PC1","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-8.4641922154659426,6.792109248876943],"tickmode":"array","ticktext":["-8","-4","0","4"],"tickvals":[-8,-4,0,4],"categoryorder":"array","categoryarray":["-8","-4","0","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"PC3","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"anno.Replicate<br />anno.Sample_Group","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"9cc437034d":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"}},"cur_data":"9cc437034d","visdat":{"9cc437034d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="annotation-of-differentially-methylated-sites"
+class="section level2">
+<h2>Annotation of differentially methylated sites</h2>
+<pre class="r"><code>load(&quot;output/diffmeth/differential_methylation_data/differential_rnbDiffMeth/rnbDiffMeth.RData&quot;)
+result &lt;- as.data.frame(object@sites$`DKO vs. WT (based on Sample_Group)`)
+result &lt;- cbind(as.data.frame(RnBeads::annotation(rnb.set)), result)
+
+  result$Type &lt;-
+    ifelse(
+      result$diffmeth.p.adj.fdr &gt;= 0.05 |
+        abs(result$mean.diff) &lt; 0.2,
+      &quot;not altered&quot;,
+      ifelse(
+        result$mean.diff &gt; 0,
+        &quot;Hypermethylated&quot;,
+        &quot;Hypomethylated&quot;
+      )
+    )
+  
+  p &lt;-
+    ggplot(result, aes(x = mean.diff, y = -log10(diffmeth.p.adj.fdr))) +
+    geom_point(aes(fill = Type, color = Type)) + theme_bw() + scale_color_manual(values = c(
+      &quot;Hypermethylated&quot; = alpha(mypal2[1], 0.6),
+      &quot;Hypomethylated&quot; = alpha(mypal2[4], 0.6),
+      &quot;not altered&quot; = alpha(&quot;black&quot;, 0.5)
+    )) + theme(legend.position = &quot;none&quot;, text = element_text(size = 12)) + xlim(-1, 1) +
+    geom_vline(xintercept = c(-0.2, 0.2), linetype = &quot;longdash&quot;) +
+    geom_hline(yintercept = c(-log10(0.05)), linetype = &quot;longdash&quot;) + labs(x =
+                                                                             &quot;Mean difference&quot;, y = &quot;-log10(FDR p)&quot;, title = &quot;DKO vs. WT&quot;)
+  
+  p</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>anno &lt;- pheno(rnb.set)
+rownames(anno) &lt;- anno$Sample_ID
+
+mat &lt;- meth(rnb.set, row.names=T)
+mat &lt;- mat[which(result$Type != &quot;not altered&quot;), ,drop=F] 
+
+plot_mat &lt;- mat[complete.cases(mat),]
+if (nrow(plot_mat)&gt;20000)
+plot_mat &lt;- plot_mat[sample(1:nrow(plot_mat), 20000),]
+  
+  p &lt;- pheatmap::pheatmap(plot_mat, annotation_col = anno[,c(&quot;Sample_Group&quot;, &quot;Replicate&quot;)], colorRampPalette(Cellpaper, space = &quot;rgb&quot;)(10), main = &quot;DKO vs. WT&quot;, show_rownames = FALSE)
+   
+p </code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>data &lt;- list()
+data[[&quot;hypo&quot;]]  &lt;- makeGRangesFromDataFrame(result[result$Type==&quot;Hypomethylated&quot;,], keep.extra.columns = T)
+data[[&quot;hyper&quot;]]&lt;- makeGRangesFromDataFrame(result[result$Type==&quot;Hypermethylated&quot;,], keep.extra.columns = T)
+
+
+annots = c(&#39;hg19_Hepg2-chromatin&#39;)
+annots_gr = build_annotations(genome = &#39;hg19&#39;, annotations = annots)</code></pre>
+<pre><code>Building hmms...</code></pre>
+<pre><code>Downloading chromHMM track for Hepg2</code></pre>
+<pre class="r"><code>for (dataset in data){
+genome(dataset) &lt;- rep(&quot;hg19&quot;, length(genome(dataset)))
+result &lt;- annotate_regions(dataset, annotations=annots_gr, minoverlap = 1L, ignore.strand = TRUE, quiet = FALSE)
+rnd_annots = annotate_regions(regions = randomize_regions(dataset),annotations = annots_gr,ignore.strand = TRUE)
+p_annots = plot_annotation(annotated_regions = result, annotated_random = rnd_annots)
+print(p_annots+ggtitle(dataset))
+}</code></pre>
+<pre><code>Annotating...</code></pre>
+<pre><code>Randomizing regions...</code></pre>
+<pre><code>Annotating...
+Annotating...</code></pre>
+<pre><code>Randomizing regions...</code></pre>
+<pre><code>Annotating...</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>background &lt;-  makeGRangesFromDataFrame(as.data.frame(RnBeads::annotation(rnb.set)))
+genome(background) &lt;- rep(&quot;hg19&quot;, length(genome(background)))
+
+
+for (dataset in names(data)){
+genome(data[[dataset]]) &lt;- rep(&quot;hg19&quot;, length(genome(data[[dataset]])))
+background2 &lt;- background[sample(1:length(background), length(data[[dataset]])),]
+result &lt;- annotate_regions(data[[dataset]], annotations=annots_gr, minoverlap = 1L, ignore.strand = TRUE, quiet = FALSE)
+rnd_annots = annotate_regions(regions = background2,annotations = annots_gr,ignore.strand = TRUE)
+p_annots = plot_annotation(annotated_regions = result, annotated_random = rnd_annots)
+print(p_annots+ggtitle(dataset))
+}</code></pre>
+<pre><code>Annotating...
+Annotating...
+Annotating...
+Annotating...</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## loading packages
+txdb &lt;- TxDb.Hsapiens.UCSC.hg19.knownGene
+hs &lt;- org.Hs.eg.db
+
+
+
+peakAnnoList &lt;- lapply(data, annotatePeak, TxDb=txdb,
+                       tssRegion=c(-3000, 500), verbose=FALSE)
+
+for (i in 1:length(peakAnnoList)) {
+  peakAnnoList[[i]]@anno$symbols &lt;- AnnotationDbi::select(hs, 
+       keys = peakAnnoList[[i]]@anno$geneId,
+       columns = c(&quot;SYMBOL&quot;),
+       keytype = &quot;ENTREZID&quot;)$SYMBOL
+
+}
+
+plotAnnoBar(peakAnnoList)</code></pre>
+<p><img src="figure/methylation_plots.Rmd/location-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>   cat(&quot;\n&quot;)</code></pre>
+<pre class="r"><code>print(plotDistToTSS(peakAnnoList,
+              title=&quot;Distribution of DMLs\nrelative to TSS&quot;))</code></pre>
+<p><img src="figure/methylation_plots.Rmd/location-2.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>   cat(&quot;\n&quot;)</code></pre>
+<pre class="r"><code>dmls &lt;- list()
+dmls[[&quot;DKO_vs_WT&quot;]] &lt;- data
+names(dmls[[&quot;DKO_vs_WT&quot;]]) &lt;- c(&quot;up&quot;, &quot;down&quot;)
+  
+plots &lt;-  region_annotation_function(dmrs = dmls, annots_gr = annots_gr, genome = &quot;hg19&quot;, background = background)</code></pre>
+<pre><code>&#39;getOption(&quot;repos&quot;)&#39; replaces Bioconductor standard repositories, see
+&#39;help(&quot;repositories&quot;, package = &quot;BiocManager&quot;)&#39; for details.
+Replacement repositories:
+    CRAN: https://cran.rstudio.com/</code></pre>
+<pre><code>The masked version of &#39;hg19&#39; is not installed. Using the unmasked version. This means that no automatic masking will be available.</code></pre>
+<pre><code>Annotating...
+Annotating...</code></pre>
+<pre><code>Counting annotation types in data and random regions</code></pre>
+<pre><code>Annotating...
+Annotating...</code></pre>
+<pre><code>Counting annotation types in data and random regions</code></pre>
+<pre><code>Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`.
+ℹ See also `vignette(&quot;ggplot2-in-packages&quot;)` for more information.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Comparison&#39;, &#39;direction&#39;. You can override
+using the `.groups` argument.</code></pre>
+<pre class="r"><code>print(plots[[1]])</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>print(plots[[2]])</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="density-plots"
+class="section level2 tabset tabset-fade tabset-pills">
+<h2 class="tabset tabset-fade tabset-pills">Density plots</h2>
+<pre class="r"><code>res &lt;- as.data.frame(object@sites$`DKO vs. WT (based on Sample_Group)`)
+res &lt;- cbind(as.data.frame(RnBeads::annotation(rnb.set)), res)
+
+g &lt;- ggplot() +
+    theme_minimal()+scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+    theme(legend.position=&#39;none&#39;)+
+     #ggnewscale::new_scale_fill() +
+  geom_bin2d(data=as.data.frame(res), mapping=aes(x= mean.g1, y= mean.g2), bins=200) +
+  theme_bw()+scale_fill_viridis(option = &quot;viridis&quot;, direction = 1)+xlab(&quot;Mean beta, group 1&quot;)+ylab(&quot;Mean beta, group 2&quot;) + geom_point(data=as.data.frame(res)[as.data.frame(res)$diffmeth.p.adj.fdr&lt;0.05,], mapping=aes(x= mean.g1, y= mean.g2), colour = &quot;red&quot;)
+print(g)</code></pre>
+<p><img src="figure/methylation_plots.Rmd/density-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cat(&quot;\n&quot;)</code></pre>
+</div>
+<div id="gene-set-enrichment-of-promoter-overlapping-dmls-reactome"
+class="section level2 tabset tabset-fade tabset-pills">
+<h2 class="tabset tabset-fade tabset-pills">Gene set enrichment of
+promoter overlapping DMLs, Reactome</h2>
+<pre class="r"><code>annots = c(&#39;hg19_genes_promoters&#39;)
+annots_gr_orig = build_annotations(genome = &#39;hg19&#39;, annotations = annots)</code></pre>
+<pre><code>&#39;select()&#39; returned 1:1 mapping between keys and columns</code></pre>
+<pre><code>Building promoters...</code></pre>
+<pre class="r"><code>   regions_bg &lt;- subsetByOverlaps(annots_gr_orig, background, ignore.strand=TRUE)
+   
+   
+    regions &lt;- subsetByOverlaps(annots_gr_orig, data$hypo, ignore.strand=TRUE)
+    
+cat(&quot;Hypermethylated in group 2:
+    \n&quot;)</code></pre>
+<p>Hypermethylated in group 2:</p>
+<pre class="r"><code> if (length(regions)&gt;0){ 
+edo &lt;- enrichPathway(gene=unique(regions$gene_id), pvalueCutoff = 0.05, readable=TRUE, organism = &quot;human&quot;, universe = unique(regions_bg$gene_id))
+if(!is.null(edo) &amp;&amp; sum(edo@result$p.adjust&lt;0.05)&gt;0){
+  edo &lt;- mutate(edo, qscore = -log(p.adjust, base=10)) 
+  
+  p &lt;- barplot(edo, x=&quot;qscore&quot;, showCategory=10)
+  g &lt;- dotplot(edo, showCategory=30) + ggtitle(&quot;dotplot for ORA&quot;)
+print(g)
+print(p)
+
+#edox &lt;- setReadable(edo, &#39;org.Mm.eg.db&#39;, &#39;ENTREZID&#39;)
+
+p2 &lt;- heatplot(edo)
+print(p2)
+cat(&quot;\n&quot;)
+
+}
+}</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cat(&quot;\n&quot;)</code></pre>
+<pre class="r"><code>    regions &lt;- subsetByOverlaps(annots_gr_orig, data$hyper, ignore.strand=TRUE)
+
+cat(&quot;Hypermethylated in group 1:
+    \n&quot;)</code></pre>
+<p>Hypermethylated in group 1:</p>
+<pre class="r"><code> if (length(regions)&gt;0){ 
+edo &lt;- enrichPathway(gene=unique(regions$gene_id), pvalueCutoff = 0.05, readable=TRUE, organism = &quot;human&quot;, universe = unique(regions_bg$gene_id))
+if(!is.null(edo) &amp;&amp; sum(edo@result$p.adjust&lt;0.05)&gt;0){
+  edo &lt;- mutate(edo, qscore = -log(p.adjust, base=10)) 
+  
+  p &lt;- barplot(edo, x=&quot;qscore&quot;, showCategory=10)
+  g &lt;- dotplot(edo, showCategory=30) + ggtitle(&quot;dotplot for ORA&quot;)
+print(g)
+print(p)
+
+p2 &lt;- heatplot(edo)
+print(p2)
+}
+cat(&quot;\n&quot;)
+}</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="gene-set-enrichment-of-promoter-overlapping-dmls-msigdb"
+class="section level2 tabset tabset-fade tabset-pills">
+<h2 class="tabset tabset-fade tabset-pills">Gene set enrichment of
+promoter overlapping DMLs, msigDB</h2>
+<pre class="r"><code>library(msigdbr)
+
+
+m_t2g &lt;- msigdbr(species = &quot;Homo sapiens&quot;, category = &quot;H&quot;) %&gt;% 
+  dplyr::select(gs_name, entrez_gene)
+
+   
+    regions &lt;- subsetByOverlaps(annots_gr_orig, data$hypo, ignore.strand=TRUE)
+       
+cat(&quot;Hypermethylated in group 2:
+    \n&quot;)</code></pre>
+<p>Hypermethylated in group 2:</p>
+<pre class="r"><code> if (length(regions)&gt;0){  
+  em &lt;- enricher(regions$gene_id, TERM2GENE=m_t2g)
+if(!is.null(em) &amp;&amp; sum(em@result$p.adjust&lt;0.05)&gt;0){
+  em &lt;- mutate(em, qscore = -log(p.adjust, base=10)) 
+  
+  p &lt;- barplot(em, x=&quot;qscore&quot;, showCategory=10)
+  g &lt;- dotplot(em, showCategory=30) + ggtitle(&quot;dotplot for ORA&quot;)
+print(g)
+print(p)
+  cat(&quot;\n&quot;)
+}
+  
+ }</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>    regions &lt;- subsetByOverlaps(annots_gr_orig, data$hyper, ignore.strand=TRUE)
+
+    
+cat(&quot;Hypermethylated in group 1:
+    \n&quot;)</code></pre>
+<p>Hypermethylated in group 1:</p>
+<pre class="r"><code> if (length(regions)&gt;0){  
+  em &lt;- enricher(regions$gene_id, TERM2GENE=m_t2g)
+if(!is.null(em) &amp;&amp; sum(em@result$p.adjust&lt;0.05)&gt;0){
+  em &lt;- mutate(em, qscore = -log(p.adjust, base=10)) 
+  
+  p &lt;- barplot(em, x=&quot;qscore&quot;, showCategory=10)
+  g &lt;- dotplot(em, showCategory=30) + ggtitle(&quot;dotplot for ORA&quot;)
+print(g)
+print(p)
+  cat(&quot;\n&quot;)
+}
+  
+ }</code></pre>
+<p><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/methylation_plots.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.3 (2023-03-15 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19042)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+ [1] parallel  grid      stats4    stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
+
+other attached packages:
+ [1] msigdbr_7.5.1                            
+ [2] BSgenome.Hsapiens.UCSC.hg19_1.4.3        
+ [3] BSgenome_1.66.3                          
+ [4] RnBeads.hg19_1.30.0                      
+ [5] ReactomePA_1.42.0                        
+ [6] plotly_4.10.2                            
+ [7] enrichplot_1.18.4                        
+ [8] DOSE_3.24.2                              
+ [9] org.Mm.eg.db_3.16.0                      
+[10] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
+[11] rtracklayer_1.58.0                       
+[12] annotatr_1.24.0                          
+[13] ChIPseeker_1.34.1                        
+[14] clusterProfiler_4.6.2                    
+[15] tibble_3.1.8                             
+[16] circlize_0.4.15                          
+[17] dplyr_1.1.0                              
+[18] ComplexHeatmap_2.14.0                    
+[19] ggrastr_1.0.2                            
+[20] ggrepel_0.9.3                            
+[21] ggsci_3.0.0                              
+[22] ggfortify_0.4.16                         
+[23] RnBeads_2.16.0                           
+[24] plyr_1.8.8                               
+[25] methylumi_2.44.0                         
+[26] minfi_1.44.0                             
+[27] bumphunter_1.40.0                        
+[28] locfit_1.5-9.7                           
+[29] iterators_1.0.14                         
+[30] foreach_1.5.2                            
+[31] Biostrings_2.66.0                        
+[32] XVector_0.38.0                           
+[33] SummarizedExperiment_1.28.0              
+[34] MatrixGenerics_1.10.0                    
+[35] FDb.InfiniumMethylation.hg19_2.2.0       
+[36] org.Hs.eg.db_3.16.0                      
+[37] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2  
+[38] GenomicFeatures_1.50.4                   
+[39] AnnotationDbi_1.60.2                     
+[40] reshape2_1.4.4                           
+[41] scales_1.2.1                             
+[42] Biobase_2.58.0                           
+[43] illuminaio_0.40.0                        
+[44] matrixStats_0.63.0                       
+[45] limma_3.54.1                             
+[46] gridExtra_2.3                            
+[47] gplots_3.1.3                             
+[48] ggplot2_3.4.2                            
+[49] fields_14.1                              
+[50] viridis_0.6.3                            
+[51] viridisLite_0.4.2                        
+[52] spam_2.9-1                               
+[53] ff_4.0.9                                 
+[54] bit_4.0.5                                
+[55] cluster_2.1.4                            
+[56] MASS_7.3-58.2                            
+[57] GenomicRanges_1.50.2                     
+[58] GenomeInfoDb_1.34.9                      
+[59] IRanges_2.32.0                           
+[60] S4Vectors_0.36.1                         
+[61] BiocGenerics_0.44.0                      
+[62] workflowr_1.7.0.4                        
+
+loaded via a namespace (and not attached):
+  [1] rappdirs_0.3.3                tidyr_1.3.0                  
+  [3] bit64_4.0.5                   knitr_1.43                   
+  [5] DelayedArray_0.23.2           data.table_1.14.8            
+  [7] KEGGREST_1.38.0               RCurl_1.98-1.10              
+  [9] GEOquery_2.66.0               doParallel_1.0.17            
+ [11] generics_0.1.3                preprocessCore_1.60.2        
+ [13] callr_3.7.3                   cowplot_1.1.1                
+ [15] RSQLite_2.3.0                 shadowtext_0.1.2             
+ [17] tzdb_0.3.0                    xml2_1.3.3                   
+ [19] httpuv_1.6.6                  xfun_0.39                    
+ [21] hms_1.1.3                     jquerylib_0.1.4              
+ [23] babelgene_22.9                evaluate_0.21                
+ [25] promises_1.2.0.1              fansi_1.0.4                  
+ [27] restfulr_0.0.15               scrime_1.3.5                 
+ [29] progress_1.2.2                caTools_1.18.2               
+ [31] dbplyr_2.3.2                  htmlwidgets_1.6.2            
+ [33] igraph_1.5.0                  DBI_1.1.3                    
+ [35] reshape_0.8.9                 ellipsis_0.3.2               
+ [37] purrr_1.0.1                   crosstalk_1.2.0              
+ [39] annotate_1.76.0               biomaRt_2.54.1               
+ [41] sparseMatrixStats_1.10.0      vctrs_0.5.2                  
+ [43] cachem_1.0.6                  withr_2.5.0                  
+ [45] ggforce_0.4.1                 HDO.db_0.99.1                
+ [47] vroom_1.6.3                   treeio_1.22.0                
+ [49] GenomicAlignments_1.34.0      prettyunits_1.1.1            
+ [51] mclust_6.0.0                  lazyeval_0.2.2               
+ [53] ape_5.7-1                     dotCall64_1.0-2              
+ [55] crayon_1.5.2                  genefilter_1.80.3            
+ [57] labeling_0.4.2                pkgconfig_2.0.3              
+ [59] tweenr_2.0.2                  nlme_3.1-162                 
+ [61] vipor_0.4.5                   rlang_1.1.1                  
+ [63] lifecycle_1.0.3               downloader_0.4               
+ [65] filelock_1.0.2                BiocFileCache_2.6.1          
+ [67] AnnotationHub_3.6.0           rprojroot_2.0.3              
+ [69] polyclip_1.10-4               graph_1.76.0                 
+ [71] rngtools_1.5.2                base64_2.0.1                 
+ [73] Matrix_1.5-3                  aplot_0.1.10                 
+ [75] boot_1.3-28.1                 Rhdf5lib_1.20.0              
+ [77] beeswarm_0.4.0                pheatmap_1.0.12              
+ [79] whisker_0.4.1                 GlobalOptions_0.1.2          
+ [81] processx_3.7.0                png_0.1-8                    
+ [83] rjson_0.2.21                  bitops_1.0-7                 
+ [85] gson_0.1.0                    getPass_0.2-2                
+ [87] KernSmooth_2.23-20            rhdf5filters_1.10.0          
+ [89] blob_1.2.4                    DelayedMatrixStats_1.20.0    
+ [91] doRNG_1.8.6                   shape_1.4.6                  
+ [93] stringr_1.5.0                 qvalue_2.30.0                
+ [95] regioneR_1.30.0               nor1mix_1.3-0                
+ [97] readr_2.1.4                   gridGraphics_0.5-1           
+ [99] reactome.db_1.82.0            graphite_1.44.0              
+[101] memoise_2.0.1                 magrittr_2.0.3               
+[103] zlibbioc_1.44.0               scatterpie_0.2.1             
+[105] compiler_4.2.3                BiocIO_1.8.0                 
+[107] RColorBrewer_1.1-3            plotrix_3.8-2                
+[109] clue_0.3-64                   Rsamtools_2.14.0             
+[111] cli_3.6.0                     patchwork_1.1.2              
+[113] ps_1.7.0                      tidyselect_1.2.0             
+[115] stringi_1.7.8                 highr_0.10                   
+[117] yaml_2.3.6                    GOSemSim_2.24.0              
+[119] askpass_1.1                   sass_0.4.6                   
+[121] fastmatch_1.1-3               tools_4.2.3                  
+[123] rstudioapi_0.14               git2r_0.30.1                 
+[125] farver_2.1.1                  ggraph_2.1.0                 
+[127] BiocManager_1.30.21           digest_0.6.29                
+[129] shiny_1.7.4                   quadprog_1.5-8               
+[131] Rcpp_1.0.9                    siggenes_1.72.0              
+[133] BiocVersion_3.16.0            later_1.3.0                  
+[135] httr_1.4.6                    colorspace_2.1-0             
+[137] XML_3.99-0.13                 fs_1.5.2                     
+[139] splines_4.2.3                 yulab.utils_0.0.6            
+[141] tidytree_0.4.2                graphlayouts_1.0.0           
+[143] multtest_2.54.0               ggplotify_0.1.0              
+[145] xtable_1.8-4                  ggtree_3.6.2                 
+[147] jsonlite_1.8.5                tidygraph_1.2.3              
+[149] ggfun_0.0.9                   R6_2.5.1                     
+[151] mime_0.12                     pillar_1.9.0                 
+[153] htmltools_0.5.4               glue_1.6.2                   
+[155] fastmap_1.1.0                 BiocParallel_1.32.5          
+[157] interactiveDisplayBase_1.36.0 beanplot_1.3.1               
+[159] codetools_0.2-19              maps_3.4.1                   
+[161] fgsea_1.24.0                  utf8_1.2.3                   
+[163] lattice_0.20-45               bslib_0.5.0                  
+[165] curl_5.0.0                    ggbeeswarm_0.7.2             
+[167] gtools_3.9.4                  GO.db_3.16.0                 
+[169] openssl_2.0.5                 survival_3.5-3               
+[171] rmarkdown_2.22                munsell_0.5.0                
+[173] GetoptLong_1.0.5              rhdf5_2.42.0                 
+[175] GenomeInfoDbData_1.2.9        HDF5Array_1.26.0             
+[177] gtable_0.3.3                 </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
