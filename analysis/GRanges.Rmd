@@ -127,12 +127,62 @@ chr1	10000	10300	+	10
 chr1	11100	11500	-	20
 chr2	20000	20030	+	15
 
+```{r}
+gr1 <- GRanges(c("chr1:10000-10300:+", "chr1:11100-11500:-", "chr2:20000-20030:+"))
+mcols(gr1)$score <- c("10", "20", "15")
+
+start(gr1)
+end(gr1)
+strand(gr1)
+seqnames(gr1)
+```
+
+
 Use the start(), end(), strand(),seqnames() and width() functions on the GRanges object you created.
 1. Subset only the ones on the + strand. 
 2. subset the ones on the chr1
 
+```{r}
+gr1[strand(gr1)=="+",]
+gr1[seqnames(gr1)=="chr1"]
+```
+
 
 Import mouse (mm9 assembly) CpG islands and RefSeq transcripts for chr12 from the UCSC browser as GRanges objects using rtracklayer functions. HINT: Check chapter content and modify the code there as necessary. If that somehow does not work, go to the UCSC browser and download it as a BED file. The track name for Refseq genes is “RefSeq Genes” and the table name is “refGene”.
+
+```{r, eval=FALSE}
+
+library(rtracklayer)
+library(AnnotationHub)
+
+ahub <- AnnotationHub()
+table(ahub$rdataclass)
+ahub <- subset(ahub, rdataclass == "GRanges" & species == "Mus musculus" )
+#query(ahub, c("mm9"))
+gr_data<- ahub[ahub$title %in% c("CpG Islands", "RefSeq Genes") & ahub$genome=="mm9"]
+cpg <- gr_data
+#refseq <- gr_data[[1]]
+
+session <- browserSession("UCSC",url = 'http://genome-euro.ucsc.edu/cgi-bin/')
+genome(session) <- "mm9"
+#query <- ucscTableQuery(session, track="CpG Islands",table="cpgIslandExt",
+#        range=GRangesForUCSCGenome("mm9", "chr12"))
+#cpg <- track(query)
+query <- ucscTableQuery(session, track="RefSeq Genes",table="refGene",
+        range=GRangesForUCSCGenome("mm9", "chr12"))
+refseq <- getTable(query)
+refseq <- makeGRangesFromDataFrame(refseq, seqnames.field = "chrom", start.field = "txstart", end.field = "txend", keep.extra.columns = T)
+
+cpg <- cpg[seqnames(cpg)=="chr12"]
+refseq <- read.table("data/mm9_Refseq_chr12.tsv")
+
+prom <- promoters(refseq, upstream = 1000, downstream = 1000)
+
+percentage <- sum(countOverlaps(cpg, prom)!=0)/length(cpg)
+
+```
+
+
 
 Following from the exercise above, get the promoters of Refseq transcripts (-1000bp and +1000 bp of the TSS) and calculate what percentage of them overlap with CpG islands. HINT: You have to get the promoter coordinates and use the findOverlaps() or subsetByOverlaps() from the GenomicRanges package. To get promoters, type ?promoters on the R console and see how to use that function to get promoters or calculate their coordinates as shown in the chapter. 
 

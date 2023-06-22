@@ -12,7 +12,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
 
 ```{r}
 library(RnBeads)
