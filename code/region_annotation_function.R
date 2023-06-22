@@ -17,7 +17,7 @@ region_annotation_function <- function(dmrs, annots_gr = annots_gr_orig, genome=
   #browser()
   plots <- list()
 
-  dmrs <- as.list(dmrs)
+  #dmrs <- as.list(dmrs)
   # if (length(dmrs)==1){
   #   names(dmrs) <- "Comparison"
   # }
@@ -31,6 +31,10 @@ region_annotation_function <- function(dmrs, annots_gr = annots_gr_orig, genome=
   result <- list()
   for (comp in names(dmrs)){
 #    dmrs_split[[comp]] <- list()
+    dmrs_split[[comp]] <- list()
+    dmrs_split[[comp]][["up"]] <- dmrs[[comp]][["up"]]
+    dmrs_split[[comp]][["down"]] <- dmrs[[comp]][["down"]]
+
 #    dmrs_split[[comp]][["up"]] <- makeGRangesFromDataFrame(dmrs[[comp]][dmrs[[comp]]$mean.diff>0,], keep.extra.columns = T)
 #    dmrs_split[[comp]][["down"]] <- makeGRangesFromDataFrame(dmrs[[comp]][dmrs[[comp]]$mean.diff<0,], keep.extra.columns = T)
 #    dmrs_split[[comp]] <- dmrs_split[[comp]][lengths(dmrs_split[[comp]])>0]
