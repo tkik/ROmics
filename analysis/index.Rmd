@@ -29,9 +29,9 @@ editor_options:
 
 Day 3
 
-[scRNA](scRNA_seq.Rmd)
+[scRNA](scRNA_seq.html)
 
-[scRNA resources](scRNAseq_resources.Rmd)
+[scRNA resources](scRNAseq_resources.html)
 
 
 
