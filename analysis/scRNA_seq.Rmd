@@ -1,0 +1,295 @@
+---
+title: "scRNA_seq"
+author: "Reka_Toth"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+ # html_notebook: default
+  workflowr::wflow_html:
+    toc: false
+    code_folding: "show"
+#output: workflowr::wflow_html:
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+Based on:
+[Single cell course by Wellcome Sanger](https://www.singlecellcourse.org/index.html)
+
+
+```{r}
+library(Seurat)
+library(ggplot2)
+library(dplyr)
+```
+
+
+```{r, eval=FALSE}
+
+adj.matrix <- Read10X("data/10_x_pbmc")
+srat <- CreateSeuratObject(adj.matrix,project = "pbmc10k", min.cells = 5, min.features = 200) 
+srat
+rm(adj.matrix)
+gc()
+saveRDS(srat, "data/seurat_pbmc.RDS")
+
+```
+
+
+```{r}
+
+srat <- readRDS( "data/seurat_pbmc.RDS")
+
+#optional
+#srat <- srat[,sample(1:nrow(srat), 3000)]
+
+head(srat@meta.data)
+
+
+```
+
+```{r, eval=F}
+library(SingleCellExperiment)
+
+pbmc.sce <- as.SingleCellExperiment(srat)
+library(iSEE)
+app <- iSEE(pbmc.sce)
+
+
+```
+
+## Plot some QC data
+
+```{r}
+srat[["percent.mt"]] <- PercentageFeatureSet(srat, pattern = "^MT")
+srat[["percent.rb"]] <- PercentageFeatureSet(srat, pattern = "^RP[SL]")
+
+VlnPlot(srat, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4)
+
+
+```
+
+```{r}
+FeatureScatter(srat, feature1 = "nCount_RNA", feature2 = "percent.mt")
+FeatureScatter(srat, feature1 = "nCount_RNA", feature2 = "percent.rb")
+
+srat[['QC']] <- "Pass"
+srat[['QC']] <- ifelse(srat@meta.data$nFeature_RNA < 500 & srat@meta.data$QC == 'Pass','Low_nFeature',srat@meta.data$QC)
+srat[['QC']] <- ifelse(srat@meta.data$percent.mt > 15, ifelse(srat@meta.data$QC=="Pass",'High_MT',paste0(srat@meta.data$QC, ", High_MT")), srat@meta.data$QC)
+srat[['QC']] <- ifelse(srat@meta.data$nFeature_RNA > 5000, ifelse(srat@meta.data$QC=="Pass",'High_nFeature',paste0(srat@meta.data$QC, ", High_nFeature")), srat@meta.data$QC)
+table(srat[['QC']])
+
+
+```
+
+More sophisticated methods are available for finding duplex cell, it worth checking their suggestions.
+
+```{r}
+srat <- srat[, srat$QC=="Pass"]
+#srat <- subset(srat, subset = nFeature_RNA > 500 & nFeature_RNA < 5000 & percent.mt < 15)
+
+VlnPlot(srat, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), ncol = 4)
+
+```
+
+# Normalization of the data
+
+```{r}
+srat <- NormalizeData(srat, normalization.method = "LogNormalize", scale.factor = 10000)
+srat <- FindVariableFeatures(srat, selection.method = "vst", nfeatures = 2000)
+
+top10 <- head(VariableFeatures(srat), 10)
+
+plot1 <- VariableFeaturePlot(srat)
+plot1 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+plot1 
+
+# scaling all the genes 
+
+all.genes <- rownames(srat)
+srat <- ScaleData(srat, features = all.genes)
+
+
+```
+
+# Dimensionality reduction
+
+```{r}
+
+srat <- RunPCA(srat, features = VariableFeatures(object = srat))
+
+VizDimLoadings(srat, dims = 1:9, reduction = "pca") & 
+  theme(axis.text=element_text(size=5), axis.title=element_text(size=8,face="bold"))
+
+DimHeatmap(srat, dims = 1:6, nfeatures = 20, cells = 500, balanced = T)
+
+
+```
+
+```{r}
+DimPlot(srat, reduction = "pca")
+ElbowPlot(srat)
+
+
+```
+
+##Clustering using kNN clustering 
+
+```{r}
+srat <- FindNeighbors(srat, dims = 1:10)
+srat <- FindClusters(srat, resolution = 0.5)
+
+srat <- RunUMAP(srat, dims = 1:10, verbose = F)
+srat@reductions
+```
+
+A very nice explanation on UMAP: (https://pair-code.github.io/understanding-umap/)
+How to interpret it and how not?
+
+
+# Visualization
+
+```{r}
+
+library(ggsci)
+DimPlot(srat,label.size = 4,repel = T,label = T)+scale_color_igv()
+FeaturePlot(srat, features = c("LILRA4", "TPM2", "PPBP", "GP1BB"))
+
+```
+
+Checking QC once more:
+
+```{r}
+FeaturePlot(srat, features = "nFeature_RNA") & theme(plot.title = element_text(size=10))
+FeaturePlot(srat, features = "percent.mt") & theme(plot.title = element_text(size=10))
+
+```
+
+## Try the same analysis with without excluding the cells not passing
+
+# Cell cycle correction
+
+```{r}
+cc.genes.updated.2019
+s.genes <- cc.genes.updated.2019$s.genes
+g2m.genes <- cc.genes.updated.2019$g2m.genes
+
+srat <- CellCycleScoring(srat, s.features = s.genes, g2m.features = g2m.genes)
+
+FeaturePlot(srat, features = "S.Score") & theme(plot.title = element_text(size=10))
+FeaturePlot(srat, features = "G2M.Score") & theme(plot.title = element_text(size=10))
+
+table(srat$Phase)
+
+DimPlot(srat, reduction = "umap", group.by = "Phase")
+#srat <- ScaleData(srat, vars.to.regress = c("S.Score", "G2M.Score"), features = rownames(srat))
+
+```
+
+## Normalization with SCTransform 
+
+```{r}
+srat <- SCTransform(srat, method = "glmGamPoi", ncells = 8824, 
+                    vars.to.regress = c("percent.mt","S.Score","G2M.Score"), verbose = F)
+srat
+
+srat <- RunPCA(srat, verbose = F)
+srat <- RunUMAP(srat, dims = 1:30, verbose = F)
+srat <- FindNeighbors(srat, dims = 1:30, verbose = F)
+srat <- FindClusters(srat, verbose = F)
+DimPlot(srat, label = T) + scale_color_igv()
+
+
+```
+
+
+```{r}
+FeaturePlot(srat,features = "percent.mt",label.size = 4,repel = T,label = T) & 
+  theme(plot.title = element_text(size=10))
+VlnPlot(srat,features = "percent.mt")+scale_fill_igv() & theme(plot.title = element_text(size=10))
+VlnPlot(srat,features = "percent.rb")+scale_fill_igv() + theme(plot.title = element_text(size=10))
+
+```
+
+## Show marker genes 
+
+```{r}
+
+library(RColorBrewer)
+
+FeaturePlot(srat,"LILRA4") & 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "Spectral")))
+FeaturePlot(srat,"MS4A1") + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "Spectral"))) + ggtitle("MS4A1: B cells")
+FeaturePlot(srat,"LYZ") + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "Spectral"))) + ggtitle("LYZ: monocytes")
+FeaturePlot(srat,"NKG7") + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "Spectral"))) + ggtitle("NKG7: natural killers")
+FeaturePlot(srat,"CD8B") + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "Spectral"))) + ggtitle("CD8B: CD8 T cells")
+FeaturePlot(srat,"IL7R") + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = "Spectral"))) + ggtitle("IL7R: CD4 T cells")
+
+VlnPlot(srat,features = c("LILRA4","MS4A1", "LYZ", "NKG7", "CD8B", "IL7R")) & 
+  theme(plot.title = element_text(size=10))
+
+```
+
+# Differential gene expression and marker identification
+
+```{r}
+
+all.markers <- FindAllMarkers(srat, only.pos = T, min.pct = 0.5, logfc.threshold = 0.5)
+
+top5_markers <- as.data.frame(all.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC))
+top5_markers
+
+DotPlot(srat, features = unique(top5_markers$gene)) + RotatedAxis()
+
+```
+
+# Cell type annotation
+
+```{r}
+library(SingleR)
+library(celldex)
+
+
+monaco.ref <- celldex::MonacoImmuneData()
+
+sce <- as.SingleCellExperiment(DietSeurat(srat))
+
+monaco.main <- SingleR(test = sce,assay.type.test = 1,ref = monaco.ref,labels = monaco.ref$label.main)
+monaco.fine <- SingleR(test = sce,assay.type.test = 1,ref = monaco.ref,labels = monaco.ref$label.fine)
+
+
+srat@meta.data$monaco.main <- monaco.main$pruned.labels
+srat@meta.data$monaco.fine <- monaco.fine$pruned.labels
+
+
+srat <- SetIdent(srat, value = "monaco.fine")
+DimPlot(srat, label = T , repel = T, label.size = 3) + NoLegend()
+
+```
+
+# Easily available datasets for annotation
+
+https://hemberg-lab.github.io/scRNA.seq.datasets/
+https://bioconductor.org/packages/release/data/experiment/html/scRNAseq.html
+https://www.ebi.ac.uk/gxa/sc/experiments
+https://www.humancellatlas.org/
+https://bis.zju.edu.cn/MCA/
+
+
+# Other possible applications
+
+## Copy number analysis
+
+## Variant calling 
+
+## Velocity analysis
+
+## 

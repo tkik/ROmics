@@ -1,0 +1,29 @@
+---
+title: "scRNAseq_resources"
+author: "tkik"
+date: "2023-07-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Best practices
+
+[Current best practices in single-cell RNA-seq analysis: a tutorial](https://www.embopress.org/doi/full/10.15252/msb.20188746)
+
+[Single-cell best practices](https://www.sc-best-practices.org/preamble.html) - in Python
+
+## Colletion of methods
+
+[Awesome single-cell](https://github.com/seandavi/awesome-single-cell)
+
+
+## Courses, books
+
+[Single cell course by Wellcome Sanger](https://www.singlecellcourse.org/index.html)
+[HBC training](https://hbctraining.github.io/scRNA-seq/schedule/)
+
+
+## Seurat
+
+[Seurat](https://satijalab.org/seurat/index.html)
