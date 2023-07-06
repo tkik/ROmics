@@ -19,6 +19,7 @@ editor_options:
 
 [rtracklayer](rtracklayer.html)
 
+
 [GRanges](GRanges.html)
 
 [references](references.html)
@@ -26,6 +27,11 @@ editor_options:
 [resources](resources.html)
 
 
+Day 3
+
+[scRNA](scRNA_seq.Rmd)
+
+[scRNA resources](scRNAseq_resources.Rmd)
 
 
 
