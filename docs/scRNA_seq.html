@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Reka_Toth" />
+
+
+<title>scRNA_seq</title>
+
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ROmics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tkik/ROmics">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">scRNA_seq</h1>
+<h4 class="author">Reka_Toth</h4>
+<h4 class="date">06 July, 2023</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-07-06
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ROmics/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0.4). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20230606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20230606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20230606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20230606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree41d7682887ac80351cab2f3b8fa4518ea560747btargetblank41d7682a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/tkik/ROmics/tree/41d7682887ac80351cab2f3b8fa4518ea560747b" target="_blank">41d7682</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtkikROmicstree41d7682887ac80351cab2f3b8fa4518ea560747btargetblank41d7682a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/tkik/ROmics/tree/41d7682887ac80351cab2f3b8fa4518ea560747b" target="_blank">41d7682</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  Course_plans.docx
+    Untracked:  analysis/integration.Rmd
+    Untracked:  data/10_x_pbmc/
+    Untracked:  data/cell_cycle_vignette_files.zip
+    Untracked:  data/idat/
+    Untracked:  data/integration/
+    Untracked:  data/mm9_Refseq_chr12.tsv
+    Untracked:  data/normalized_rnb.set.RDS
+    Untracked:  data/raw_rnb.set.RDS
+    Untracked:  data/raw_rnbset_GSE175758.RDS
+    Untracked:  data/sample_annotation.csv
+    Untracked:  data/seurat_pbmc.RDS
+    Untracked:  output/Genomic data.pptx
+    Untracked:  output/diffmeth/
+
+Unstaged changes:
+    Modified:   analysis/GRanges.Rmd
+    Modified:   analysis/methylation_plots.Rmd
+    Modified:   analysis/reproducible_programming.Rmd
+    Modified:   code/rnb_analysis.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/scRNA_seq.Rmd</code>) and HTML
+(<code>docs/scRNA_seq.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkik/ROmics/blob/41d7682887ac80351cab2f3b8fa4518ea560747b/analysis/scRNA_seq.Rmd" target="_blank">41d7682</a>
+</td>
+<td>
+tkik
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+wflow_publish(c("analysis/scRNA_seq.Rmd",
+"analysis/scRNAseq_resources.Rmd"))
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>Based on: <a
+href="https://www.singlecellcourse.org/index.html">Single cell course by
+Wellcome Sanger</a></p>
+<pre class="r"><code>library(Seurat)
+library(ggplot2)
+library(dplyr)</code></pre>
+<pre class="r"><code>adj.matrix &lt;- Read10X(&quot;data/10_x_pbmc&quot;)
+srat &lt;- CreateSeuratObject(adj.matrix,project = &quot;pbmc10k&quot;, min.cells = 5, min.features = 200) 
+srat
+rm(adj.matrix)
+gc()
+saveRDS(srat, &quot;data/seurat_pbmc.RDS&quot;)</code></pre>
+<pre class="r"><code>srat &lt;- readRDS( &quot;data/seurat_pbmc.RDS&quot;)
+
+#optional
+#srat &lt;- srat[,sample(1:nrow(srat), 3000)]
+
+head(srat@meta.data)</code></pre>
+<pre><code>                   orig.ident nCount_RNA nFeature_RNA
+AAACCCACATAACTCG-1    pbmc10k      22195         4733
+AAACCCACATGTAACC-1    pbmc10k       7629         2190
+AAACCCAGTGAGTCAG-1    pbmc10k      21358         4246
+AAACCCAGTGCTTATG-1    pbmc10k        857          342
+AAACGAACAGTCAGTT-1    pbmc10k      15005         4073
+AAACGAACATTCGGGC-1    pbmc10k       9854         2284</code></pre>
+<pre class="r"><code>library(SingleCellExperiment)
+
+pbmc.sce &lt;- as.SingleCellExperiment(srat)
+library(iSEE)
+app &lt;- iSEE(pbmc.sce)</code></pre>
+<div id="plot-some-qc-data" class="section level2">
+<h2>Plot some QC data</h2>
+<pre class="r"><code>srat[[&quot;percent.mt&quot;]] &lt;- PercentageFeatureSet(srat, pattern = &quot;^MT&quot;)
+srat[[&quot;percent.rb&quot;]] &lt;- PercentageFeatureSet(srat, pattern = &quot;^RP[SL]&quot;)
+
+VlnPlot(srat, features = c(&quot;nFeature_RNA&quot;, &quot;nCount_RNA&quot;, &quot;percent.mt&quot;, &quot;percent.rb&quot;), ncol = 4)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeatureScatter(srat, feature1 = &quot;nCount_RNA&quot;, feature2 = &quot;percent.mt&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeatureScatter(srat, feature1 = &quot;nCount_RNA&quot;, feature2 = &quot;percent.rb&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>srat[[&#39;QC&#39;]] &lt;- &quot;Pass&quot;
+srat[[&#39;QC&#39;]] &lt;- ifelse(srat@meta.data$nFeature_RNA &lt; 500 &amp; srat@meta.data$QC == &#39;Pass&#39;,&#39;Low_nFeature&#39;,srat@meta.data$QC)
+srat[[&#39;QC&#39;]] &lt;- ifelse(srat@meta.data$percent.mt &gt; 15, ifelse(srat@meta.data$QC==&quot;Pass&quot;,&#39;High_MT&#39;,paste0(srat@meta.data$QC, &quot;, High_MT&quot;)), srat@meta.data$QC)
+srat[[&#39;QC&#39;]] &lt;- ifelse(srat@meta.data$nFeature_RNA &gt; 5000, ifelse(srat@meta.data$QC==&quot;Pass&quot;,&#39;High_nFeature&#39;,paste0(srat@meta.data$QC, &quot;, High_nFeature&quot;)), srat@meta.data$QC)
+table(srat[[&#39;QC&#39;]])</code></pre>
+<pre><code>QC
+              High_MT         High_nFeature          Low_nFeature 
+                  574                   152                    18 
+Low_nFeature, High_MT                  Pass 
+                  182                  9192 </code></pre>
+<p>More sophisticated methods are available for finding duplex cell, it
+worth checking their suggestions.</p>
+<pre class="r"><code>srat &lt;- srat[, srat$QC==&quot;Pass&quot;]
+#srat &lt;- subset(srat, subset = nFeature_RNA &gt; 500 &amp; nFeature_RNA &lt; 5000 &amp; percent.mt &lt; 15)
+
+VlnPlot(srat, features = c(&quot;nFeature_RNA&quot;, &quot;nCount_RNA&quot;, &quot;percent.mt&quot;, &quot;percent.rb&quot;), ncol = 4)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="normalization-of-the-data" class="section level1">
+<h1>Normalization of the data</h1>
+<pre class="r"><code>srat &lt;- NormalizeData(srat, normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000)
+srat &lt;- FindVariableFeatures(srat, selection.method = &quot;vst&quot;, nfeatures = 2000)
+
+top10 &lt;- head(VariableFeatures(srat), 10)
+
+plot1 &lt;- VariableFeaturePlot(srat)
+plot1 &lt;- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+plot1 </code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># scaling all the genes 
+
+all.genes &lt;- rownames(srat)
+srat &lt;- ScaleData(srat, features = all.genes)</code></pre>
+</div>
+<div id="dimensionality-reduction" class="section level1">
+<h1>Dimensionality reduction</h1>
+<pre class="r"><code>srat &lt;- RunPCA(srat, features = VariableFeatures(object = srat))
+
+VizDimLoadings(srat, dims = 1:9, reduction = &quot;pca&quot;) &amp; 
+  theme(axis.text=element_text(size=5), axis.title=element_text(size=8,face=&quot;bold&quot;))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimHeatmap(srat, dims = 1:6, nfeatures = 20, cells = 500, balanced = T)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(srat, reduction = &quot;pca&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ElbowPlot(srat)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>##Clustering using kNN clustering</p>
+<pre class="r"><code>srat &lt;- FindNeighbors(srat, dims = 1:10)
+srat &lt;- FindClusters(srat, resolution = 0.5)</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 9192
+Number of edges: 309371
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9077
+Number of communities: 14
+Elapsed time: 0 seconds</code></pre>
+<pre class="r"><code>srat &lt;- RunUMAP(srat, dims = 1:10, verbose = F)</code></pre>
+<pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+This message will be shown once per session</code></pre>
+<pre class="r"><code>srat@reductions</code></pre>
+<pre><code>$pca
+A dimensional reduction object with key PC_ 
+ Number of dimensions: 50 
+ Projected dimensional reduction calculated:  FALSE 
+ Jackstraw run: FALSE 
+ Computed using assay: RNA 
+
+$umap
+A dimensional reduction object with key UMAP_ 
+ Number of dimensions: 2 
+ Projected dimensional reduction calculated:  FALSE 
+ Jackstraw run: FALSE 
+ Computed using assay: RNA </code></pre>
+<p>A very nice explanation on UMAP: (<a
+href="https://pair-code.github.io/understanding-umap/"
+class="uri">https://pair-code.github.io/understanding-umap/</a>) How to
+interpret it and how not?</p>
+</div>
+<div id="visualization" class="section level1">
+<h1>Visualization</h1>
+<pre class="r"><code>library(ggsci)
+DimPlot(srat,label.size = 4,repel = T,label = T)+scale_color_igv()</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat, features = c(&quot;LILRA4&quot;, &quot;TPM2&quot;, &quot;PPBP&quot;, &quot;GP1BB&quot;))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Checking QC once more:</p>
+<pre class="r"><code>FeaturePlot(srat, features = &quot;nFeature_RNA&quot;) &amp; theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat, features = &quot;percent.mt&quot;) &amp; theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<div
+id="try-the-same-analysis-with-without-excluding-the-cells-not-passing"
+class="section level2">
+<h2>Try the same analysis with without excluding the cells not
+passing</h2>
+</div>
+</div>
+<div id="cell-cycle-correction" class="section level1">
+<h1>Cell cycle correction</h1>
+<pre class="r"><code>cc.genes.updated.2019</code></pre>
+<pre><code>$s.genes
+ [1] &quot;MCM5&quot;     &quot;PCNA&quot;     &quot;TYMS&quot;     &quot;FEN1&quot;     &quot;MCM7&quot;     &quot;MCM4&quot;    
+ [7] &quot;RRM1&quot;     &quot;UNG&quot;      &quot;GINS2&quot;    &quot;MCM6&quot;     &quot;CDCA7&quot;    &quot;DTL&quot;     
+[13] &quot;PRIM1&quot;    &quot;UHRF1&quot;    &quot;CENPU&quot;    &quot;HELLS&quot;    &quot;RFC2&quot;     &quot;POLR1B&quot;  
+[19] &quot;NASP&quot;     &quot;RAD51AP1&quot; &quot;GMNN&quot;     &quot;WDR76&quot;    &quot;SLBP&quot;     &quot;CCNE2&quot;   
+[25] &quot;UBR7&quot;     &quot;POLD3&quot;    &quot;MSH2&quot;     &quot;ATAD2&quot;    &quot;RAD51&quot;    &quot;RRM2&quot;    
+[31] &quot;CDC45&quot;    &quot;CDC6&quot;     &quot;EXO1&quot;     &quot;TIPIN&quot;    &quot;DSCC1&quot;    &quot;BLM&quot;     
+[37] &quot;CASP8AP2&quot; &quot;USP1&quot;     &quot;CLSPN&quot;    &quot;POLA1&quot;    &quot;CHAF1B&quot;   &quot;MRPL36&quot;  
+[43] &quot;E2F8&quot;    
+
+$g2m.genes
+ [1] &quot;HMGB2&quot;   &quot;CDK1&quot;    &quot;NUSAP1&quot;  &quot;UBE2C&quot;   &quot;BIRC5&quot;   &quot;TPX2&quot;    &quot;TOP2A&quot;  
+ [8] &quot;NDC80&quot;   &quot;CKS2&quot;    &quot;NUF2&quot;    &quot;CKS1B&quot;   &quot;MKI67&quot;   &quot;TMPO&quot;    &quot;CENPF&quot;  
+[15] &quot;TACC3&quot;   &quot;PIMREG&quot;  &quot;SMC4&quot;    &quot;CCNB2&quot;   &quot;CKAP2L&quot;  &quot;CKAP2&quot;   &quot;AURKB&quot;  
+[22] &quot;BUB1&quot;    &quot;KIF11&quot;   &quot;ANP32E&quot;  &quot;TUBB4B&quot;  &quot;GTSE1&quot;   &quot;KIF20B&quot;  &quot;HJURP&quot;  
+[29] &quot;CDCA3&quot;   &quot;JPT1&quot;    &quot;CDC20&quot;   &quot;TTK&quot;     &quot;CDC25C&quot;  &quot;KIF2C&quot;   &quot;RANGAP1&quot;
+[36] &quot;NCAPD2&quot;  &quot;DLGAP5&quot;  &quot;CDCA2&quot;   &quot;CDCA8&quot;   &quot;ECT2&quot;    &quot;KIF23&quot;   &quot;HMMR&quot;   
+[43] &quot;AURKA&quot;   &quot;PSRC1&quot;   &quot;ANLN&quot;    &quot;LBR&quot;     &quot;CKAP5&quot;   &quot;CENPE&quot;   &quot;CTCF&quot;   
+[50] &quot;NEK2&quot;    &quot;G2E3&quot;    &quot;GAS2L3&quot;  &quot;CBX5&quot;    &quot;CENPA&quot;  </code></pre>
+<pre class="r"><code>s.genes &lt;- cc.genes.updated.2019$s.genes
+g2m.genes &lt;- cc.genes.updated.2019$g2m.genes
+
+srat &lt;- CellCycleScoring(srat, s.features = s.genes, g2m.features = g2m.genes)
+
+FeaturePlot(srat, features = &quot;S.Score&quot;) &amp; theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat, features = &quot;G2M.Score&quot;) &amp; theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(srat$Phase)</code></pre>
+<pre><code>
+  G1  G2M    S 
+3831 1938 3423 </code></pre>
+<pre class="r"><code>DimPlot(srat, reduction = &quot;umap&quot;, group.by = &quot;Phase&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-14-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#srat &lt;- ScaleData(srat, vars.to.regress = c(&quot;S.Score&quot;, &quot;G2M.Score&quot;), features = rownames(srat))</code></pre>
+<div id="normalization-with-sctransform" class="section level2">
+<h2>Normalization with SCTransform</h2>
+<pre class="r"><code>srat &lt;- SCTransform(srat, method = &quot;glmGamPoi&quot;, ncells = 8824, 
+                    vars.to.regress = c(&quot;percent.mt&quot;,&quot;S.Score&quot;,&quot;G2M.Score&quot;), verbose = F)
+srat</code></pre>
+<pre><code>An object of class Seurat 
+41028 features across 9192 samples within 2 assays 
+Active assay: SCT (20377 features, 3000 variable features)
+ 1 other assay present: RNA
+ 2 dimensional reductions calculated: pca, umap</code></pre>
+<pre class="r"><code>srat &lt;- RunPCA(srat, verbose = F)
+srat &lt;- RunUMAP(srat, dims = 1:30, verbose = F)
+srat &lt;- FindNeighbors(srat, dims = 1:30, verbose = F)
+srat &lt;- FindClusters(srat, verbose = F)
+DimPlot(srat, label = T) + scale_color_igv()</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat,features = &quot;percent.mt&quot;,label.size = 4,repel = T,label = T) &amp; 
+  theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>VlnPlot(srat,features = &quot;percent.mt&quot;)+scale_fill_igv() &amp; theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>VlnPlot(srat,features = &quot;percent.rb&quot;)+scale_fill_igv() + theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-16-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="show-marker-genes" class="section level2">
+<h2>Show marker genes</h2>
+<pre class="r"><code>library(RColorBrewer)
+
+FeaturePlot(srat,&quot;LILRA4&quot;) &amp; 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = &quot;Spectral&quot;)))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat,&quot;MS4A1&quot;) + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = &quot;Spectral&quot;))) + ggtitle(&quot;MS4A1: B cells&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat,&quot;LYZ&quot;) + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = &quot;Spectral&quot;))) + ggtitle(&quot;LYZ: monocytes&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat,&quot;NKG7&quot;) + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = &quot;Spectral&quot;))) + ggtitle(&quot;NKG7: natural killers&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat,&quot;CD8B&quot;) + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = &quot;Spectral&quot;))) + ggtitle(&quot;CD8B: CD8 T cells&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>FeaturePlot(srat,&quot;IL7R&quot;) + 
+  scale_colour_gradientn(colours = rev(brewer.pal(n = 11, name = &quot;Spectral&quot;))) + ggtitle(&quot;IL7R: CD4 T cells&quot;)</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>VlnPlot(srat,features = c(&quot;LILRA4&quot;,&quot;MS4A1&quot;, &quot;LYZ&quot;, &quot;NKG7&quot;, &quot;CD8B&quot;, &quot;IL7R&quot;)) &amp; 
+  theme(plot.title = element_text(size=10))</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-17-7.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="differential-gene-expression-and-marker-identification"
+class="section level1">
+<h1>Differential gene expression and marker identification</h1>
+<pre class="r"><code>all.markers &lt;- FindAllMarkers(srat, only.pos = T, min.pct = 0.5, logfc.threshold = 0.5)
+
+top5_markers &lt;- as.data.frame(all.markers %&gt;% group_by(cluster) %&gt;% top_n(n = 5, wt = avg_log2FC))
+top5_markers</code></pre>
+<pre><code>           p_val avg_log2FC pct.1 pct.2     p_val_adj cluster      gene
+1   0.000000e+00   4.310575 0.994 0.276  0.000000e+00       0    S100A8
+2   0.000000e+00   4.121278 0.994 0.334  0.000000e+00       0    S100A9
+3   0.000000e+00   3.003041 0.987 0.159  0.000000e+00       0      VCAN
+4   0.000000e+00   2.995073 0.967 0.107  0.000000e+00       0   S100A12
+5   0.000000e+00   2.935292 0.994 0.358  0.000000e+00       0       LYZ
+6   0.000000e+00   1.111249 0.906 0.363  0.000000e+00       1      TCF7
+7   0.000000e+00   1.097327 0.991 0.677  0.000000e+00       1      LDHB
+8   0.000000e+00   1.055345 0.881 0.384  0.000000e+00       1    BCL11B
+9   0.000000e+00   1.029400 0.818 0.278  0.000000e+00       1      CCR7
+10 3.126633e-210   1.176201 0.690 0.312 6.371140e-206       1     TRBC1
+11  0.000000e+00   2.246119 0.979 0.083  0.000000e+00       2      CD8B
+12  0.000000e+00   1.515782 0.675 0.030  0.000000e+00       2 LINC02446
+13  0.000000e+00   1.462175 0.870 0.090  0.000000e+00       2      CD8A
+14  0.000000e+00   1.165595 0.832 0.130  0.000000e+00       2     KLRK1
+15 1.636253e-294   1.063198 0.961 0.539 3.334193e-290       2     NOSIP
+16  0.000000e+00   1.600936 0.992 0.537  0.000000e+00       3      IL32
+17  0.000000e+00   1.555778 0.997 0.677  0.000000e+00       3       LTB
+18 5.534177e-269   1.393306 0.943 0.456 1.127699e-264       3      IL7R
+19 3.474426e-253   1.214024 0.771 0.345 7.079837e-249       3     ITGB1
+20 4.161919e-195   1.105205 0.937 0.668 8.480743e-191       3     CRIP1
+21  0.000000e+00   2.061647 0.862 0.187  0.000000e+00       4  APOBEC3A
+22  0.000000e+00   2.013142 0.986 0.339  0.000000e+00       4    IFITM3
+23  0.000000e+00   1.993239 0.968 0.299  0.000000e+00       4    MARCKS
+24  0.000000e+00   1.984605 0.995 0.337  0.000000e+00       4      FGL2
+25  0.000000e+00   1.884250 0.993 0.498  0.000000e+00       4   TNFSF10
+26  0.000000e+00   3.481146 1.000 0.152  0.000000e+00       5      NKG7
+27  0.000000e+00   3.435491 0.995 0.120  0.000000e+00       5      CCL5
+28  0.000000e+00   3.303899 0.943 0.037  0.000000e+00       5      GZMH
+29  0.000000e+00   3.246315 0.962 0.072  0.000000e+00       5      GNLY
+30  0.000000e+00   2.605827 0.981 0.123  0.000000e+00       5      GZMA
+31  0.000000e+00   3.790013 0.997 0.134  0.000000e+00       6    FCGR3A
+32  0.000000e+00   3.563433 0.912 0.027  0.000000e+00       6    CDKN1C
+33  0.000000e+00   2.715926 0.965 0.210  0.000000e+00       6     MS4A7
+34 2.648630e-244   2.806674 1.000 0.457 5.397113e-240       6      LST1
+35 4.223137e-243   2.825528 1.000 0.383 8.605487e-239       6    IFITM3
+36  0.000000e+00   2.909936 0.839 0.038  0.000000e+00       7      GZMK
+37  0.000000e+00   2.646777 0.929 0.128  0.000000e+00       7      CCL5
+38 4.294147e-198   1.575582 0.774 0.135 8.750183e-194       7      GZMA
+39 1.048187e-121   1.492816 1.000 0.575 2.135892e-117       7      IL32
+40 1.241551e-102   1.279313 0.671 0.208  2.529908e-98       7     DUSP2
+41  0.000000e+00   4.849782 1.000 0.077  0.000000e+00       8      GNLY
+42  0.000000e+00   3.852437 1.000 0.158  0.000000e+00       8      NKG7
+43  0.000000e+00   3.257173 0.984 0.106  0.000000e+00       8      PRF1
+44  0.000000e+00   2.925507 0.954 0.130  0.000000e+00       8      GZMA
+45  0.000000e+00   2.818796 0.836 0.078  0.000000e+00       8      CCL4
+46  0.000000e+00   3.688433 0.997 0.075  0.000000e+00       9      IGKC
+47  0.000000e+00   2.886977 0.993 0.071  0.000000e+00       9     MS4A1
+48  0.000000e+00   2.791852 1.000 0.104  0.000000e+00       9     CD79A
+49  0.000000e+00   2.273945 0.976 0.085  0.000000e+00       9     BANK1
+50 2.557792e-297   2.799055 0.742 0.082 5.212013e-293       9      IGHM
+51  0.000000e+00   3.666833 0.996 0.075  0.000000e+00      10      IGHM
+52  0.000000e+00   3.450344 0.993 0.076  0.000000e+00      10      IGKC
+53  0.000000e+00   3.027467 0.968 0.023  0.000000e+00      10     TCL1A
+54  0.000000e+00   2.883451 1.000 0.105  0.000000e+00      10     CD79A
+55  0.000000e+00   2.869256 0.982 0.045  0.000000e+00      10      IGHD
+56  0.000000e+00   4.401373 0.851 0.014  0.000000e+00      11     IGLC2
+57  0.000000e+00   3.817843 0.695 0.008  0.000000e+00      11     IGLC3
+58  0.000000e+00   3.397584 0.885 0.080  0.000000e+00      11      IGHM
+59  0.000000e+00   2.880247 0.996 0.107  0.000000e+00      11     CD79A
+60  0.000000e+00   2.768997 0.992 0.074  0.000000e+00      11     MS4A1
+61  0.000000e+00   3.612316 0.853 0.044  0.000000e+00      12    JCHAIN
+62 1.460259e-244   4.256712 0.835 0.060 2.975570e-240      12      GZMB
+63 1.887091e-200   3.467866 0.862 0.085 3.845326e-196      12      PLD4
+64 9.813899e-157   3.604597 0.862 0.114 1.999778e-152      12     ITM2C
+65 1.618516e-127   3.501312 0.862 0.146 3.298051e-123      12      TCF4
+66  0.000000e+00   2.911873 0.798 0.007  0.000000e+00      13    FCER1A
+67 2.032797e-266   2.569061 0.875 0.057 4.142231e-262      13   CLEC10A
+68  5.361890e-89   3.049338 1.000 0.296  1.092592e-84      13  HLA-DQA1
+69  2.091102e-67   2.725693 1.000 0.526  4.261039e-63      13  HLA-DPB1
+70  1.830827e-62   2.559244 1.000 0.539  3.730676e-58      13  HLA-DPA1
+71  0.000000e+00   2.651979 0.971 0.055  0.000000e+00      14      GZMK
+72 1.887285e-196   3.422114 1.000 0.118 3.845720e-192      14     KLRB1
+73 1.514846e-127   2.102685 0.990 0.147 3.086802e-123      14      GZMA
+74 1.228507e-126   1.968356 0.856 0.127 2.503329e-122      14      NCR3
+75 1.055177e-107   2.061135 1.000 0.177 2.150135e-103      14      NKG7
+76  7.997163e-81   9.018062 0.929 0.032  1.629582e-76      15     IGLC1
+77  6.062644e-70   9.960242 0.929 0.038  1.235385e-65      15     IGHA1
+78  1.527601e-61   7.099974 1.000 0.052  3.112792e-57      15    JCHAIN
+79  1.994398e-43   5.597549 0.571 0.022  4.063985e-39      15     IGHG1
+80  5.779482e-17   8.267811 0.714 0.103  1.177685e-12      15      IGKC</code></pre>
+<pre class="r"><code>DotPlot(srat, features = unique(top5_markers$gene)) + RotatedAxis()</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="cell-type-annotation" class="section level1">
+<h1>Cell type annotation</h1>
+<pre class="r"><code>library(SingleR)
+library(celldex)
+
+
+monaco.ref &lt;- celldex::MonacoImmuneData()
+
+sce &lt;- as.SingleCellExperiment(DietSeurat(srat))
+
+monaco.main &lt;- SingleR(test = sce,assay.type.test = 1,ref = monaco.ref,labels = monaco.ref$label.main)
+monaco.fine &lt;- SingleR(test = sce,assay.type.test = 1,ref = monaco.ref,labels = monaco.ref$label.fine)
+
+
+srat@meta.data$monaco.main &lt;- monaco.main$pruned.labels
+srat@meta.data$monaco.fine &lt;- monaco.fine$pruned.labels
+
+
+srat &lt;- SetIdent(srat, value = &quot;monaco.fine&quot;)
+DimPlot(srat, label = T , repel = T, label.size = 3) + NoLegend()</code></pre>
+<pre><code>Warning: ggrepel: 4 unlabeled data points (too many overlaps). Consider
+increasing max.overlaps</code></pre>
+<p><img src="figure/scRNA_seq.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="easily-available-datasets-for-annotation"
+class="section level1">
+<h1>Easily available datasets for annotation</h1>
+<p><a href="https://hemberg-lab.github.io/scRNA.seq.datasets/"
+class="uri">https://hemberg-lab.github.io/scRNA.seq.datasets/</a> <a
+href="https://bioconductor.org/packages/release/data/experiment/html/scRNAseq.html"
+class="uri">https://bioconductor.org/packages/release/data/experiment/html/scRNAseq.html</a>
+<a href="https://www.ebi.ac.uk/gxa/sc/experiments"
+class="uri">https://www.ebi.ac.uk/gxa/sc/experiments</a> <a
+href="https://www.humancellatlas.org/"
+class="uri">https://www.humancellatlas.org/</a> <a
+href="https://bis.zju.edu.cn/MCA/"
+class="uri">https://bis.zju.edu.cn/MCA/</a></p>
+</div>
+<div id="other-possible-applications" class="section level1">
+<h1>Other possible applications</h1>
+<div id="copy-number-analysis" class="section level2">
+<h2>Copy number analysis</h2>
+</div>
+<div id="variant-calling" class="section level2">
+<h2>Variant calling</h2>
+</div>
+<div id="velocity-analysis" class="section level2">
+<h2>Velocity analysis</h2>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.3 (2023-03-15 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19042)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] celldex_1.8.0               SingleR_2.0.0              
+ [3] SummarizedExperiment_1.28.0 Biobase_2.58.0             
+ [5] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
+ [7] IRanges_2.32.0              S4Vectors_0.36.1           
+ [9] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
+[11] matrixStats_0.63.0          RColorBrewer_1.1-3         
+[13] ggsci_3.0.0                 dplyr_1.1.0                
+[15] ggplot2_3.4.2               SeuratObject_4.1.3         
+[17] Seurat_4.3.0                workflowr_1.7.0.4          
+
+loaded via a namespace (and not attached):
+  [1] utf8_1.2.3                    spatstat.explore_3.2-1       
+  [3] reticulate_1.30               tidyselect_1.2.0             
+  [5] RSQLite_2.3.0                 AnnotationDbi_1.60.2         
+  [7] htmlwidgets_1.6.2             grid_4.2.3                   
+  [9] BiocParallel_1.32.5           Rtsne_0.16                   
+ [11] munsell_0.5.0                 ScaledMatrix_1.6.0           
+ [13] codetools_0.2-19              ica_1.0-3                    
+ [15] future_1.32.0                 miniUI_0.1.1.1               
+ [17] withr_2.5.0                   spatstat.random_3.1-5        
+ [19] colorspace_2.1-0              progressr_0.13.0             
+ [21] filelock_1.0.2                highr_0.10                   
+ [23] knitr_1.43                    rstudioapi_0.14              
+ [25] SingleCellExperiment_1.20.1   ROCR_1.0-11                  
+ [27] tensor_1.5                    listenv_0.9.0                
+ [29] labeling_0.4.2                git2r_0.30.1                 
+ [31] GenomeInfoDbData_1.2.9        polyclip_1.10-4              
+ [33] bit64_4.0.5                   farver_2.1.1                 
+ [35] rprojroot_2.0.3               parallelly_1.36.0            
+ [37] vctrs_0.5.2                   generics_0.1.3               
+ [39] xfun_0.39                     BiocFileCache_2.6.1          
+ [41] R6_2.5.1                      ggbeeswarm_0.7.2             
+ [43] rsvd_1.0.5                    bitops_1.0-7                 
+ [45] spatstat.utils_3.0-3          cachem_1.0.6                 
+ [47] DelayedArray_0.23.2           promises_1.2.0.1             
+ [49] scales_1.2.1                  beeswarm_0.4.0               
+ [51] gtable_0.3.3                  beachmat_2.14.2              
+ [53] globals_0.16.2                processx_3.7.0               
+ [55] goftest_1.2-3                 rlang_1.1.1                  
+ [57] splines_4.2.3                 lazyeval_0.2.2               
+ [59] spatstat.geom_3.2-1           BiocManager_1.30.21          
+ [61] yaml_2.3.6                    reshape2_1.4.4               
+ [63] abind_1.4-5                   httpuv_1.6.6                 
+ [65] tools_4.2.3                   ellipsis_0.3.2               
+ [67] jquerylib_0.1.4               ggridges_0.5.4               
+ [69] Rcpp_1.0.9                    plyr_1.8.8                   
+ [71] sparseMatrixStats_1.10.0      zlibbioc_1.44.0              
+ [73] purrr_1.0.1                   RCurl_1.98-1.10              
+ [75] ps_1.7.0                      deldir_1.0-9                 
+ [77] pbapply_1.7-0                 cowplot_1.1.1                
+ [79] zoo_1.8-12                    ggrepel_0.9.3                
+ [81] cluster_2.1.4                 fs_1.5.2                     
+ [83] magrittr_2.0.3                data.table_1.14.8            
+ [85] glmGamPoi_1.10.2              scattermore_1.2              
+ [87] lmtest_0.9-40                 RANN_2.6.1                   
+ [89] whisker_0.4.1                 fitdistrplus_1.1-11          
+ [91] patchwork_1.1.2               mime_0.12                    
+ [93] evaluate_0.21                 xtable_1.8-4                 
+ [95] gridExtra_2.3                 compiler_4.2.3               
+ [97] tibble_3.1.8                  crayon_1.5.2                 
+ [99] KernSmooth_2.23-20            htmltools_0.5.4              
+[101] later_1.3.0                   tidyr_1.3.0                  
+[103] DBI_1.1.3                     ExperimentHub_2.6.0          
+[105] dbplyr_2.3.2                  rappdirs_0.3.3               
+[107] MASS_7.3-58.2                 Matrix_1.5-3                 
+[109] cli_3.6.0                     parallel_4.2.3               
+[111] igraph_1.5.0                  pkgconfig_2.0.3              
+[113] getPass_0.2-2                 sp_1.6-1                     
+[115] plotly_4.10.2                 spatstat.sparse_3.0-1        
+[117] vipor_0.4.5                   bslib_0.5.0                  
+[119] XVector_0.38.0                stringr_1.5.0                
+[121] callr_3.7.3                   digest_0.6.29                
+[123] sctransform_0.3.5             RcppAnnoy_0.0.20             
+[125] Biostrings_2.66.0             spatstat.data_3.0-1          
+[127] rmarkdown_2.22                leiden_0.4.3                 
+[129] uwot_0.1.14                   DelayedMatrixStats_1.20.0    
+[131] curl_5.0.0                    shiny_1.7.4                  
+[133] lifecycle_1.0.3               nlme_3.1-162                 
+[135] jsonlite_1.8.5                viridisLite_0.4.2            
+[137] limma_3.54.1                  fansi_1.0.4                  
+[139] pillar_1.9.0                  lattice_0.20-45              
+[141] KEGGREST_1.38.0               ggrastr_1.0.2                
+[143] fastmap_1.1.0                 httr_1.4.6                   
+[145] survival_3.5-3                interactiveDisplayBase_1.36.0
+[147] glue_1.6.2                    png_0.1-8                    
+[149] BiocVersion_3.16.0            bit_4.0.5                    
+[151] stringi_1.7.8                 sass_0.4.6                   
+[153] blob_1.2.4                    AnnotationHub_3.6.0          
+[155] BiocSingular_1.14.0           memoise_2.0.1                
+[157] irlba_2.3.5.1                 future.apply_1.11.0          </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
