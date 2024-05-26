@@ -132,7 +132,13 @@ chr2	20000	20030	+	15
 List the start, end, strand and chomrosomes of the generated object. 
 
 ```{r}
+gr1 <- GRanges(c("chr1:10000-10300:+", "chr1:11100-11500:-", "chr2:20000-20030:+"))
+mcols(gr1)$score <- c("10", "20", "15")
 
+start(gr1)
+end(gr1)
+strand(gr1)
+seqnames(gr1)
 ```
 
 
@@ -141,7 +147,8 @@ Use the start(), end(), strand(),seqnames() and width() functions on the GRanges
 2. subset the ones on the chr1
 
 ```{r}
-
+gr1[strand(gr1)=="+",]
+gr1[seqnames(gr1)=="chr1"]
 ```
 
 
@@ -169,7 +176,22 @@ Find the peaks that are overlapping with a promoter. See if there are more overl
 
 ```{r}
 
+ol <- findOverlaps(smad3, annots_gr)
 
+
+smad3_random <- randomize_regions(
+  smad3,
+  allow.overlaps = FALSE,
+  per.chromosome = TRUE,
+  quiet = FALSE
+)
+
+cl <- countOverlaps(smad3, annots_gr)
+cl_random <- countOverlaps(smad3_random, annots_gr)
+
+cont <- matrix(c(sum(cl!=0), sum(cl_random!=0), length(smad3)-sum(cl!=0), length(smad3)-sum(cl_random!=0)), nrow=2)
+
+chisq.test(cont)
 
 ```
 
