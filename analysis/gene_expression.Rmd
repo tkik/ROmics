@@ -282,7 +282,7 @@ phenodata <- phenodata %>%
   rename(group=description)
 
 glMDPlot(
-y=valid_res, xval="log2FoldChange", yval="log10padj",
+x=valid_res, xval="log2FoldChange", yval="log10padj",
 counts = ge_mat_combat[rownames(valid_res),],
 anno = gene_anno[rownames(valid_res),],
 groups = phenodata[,"group"],
