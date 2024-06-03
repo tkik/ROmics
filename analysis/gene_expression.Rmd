@@ -23,7 +23,7 @@ editor_options:
 
 4. Differential expression analysis (batch effects)
 
-5. Visualization of the results - volcano plot, dotplot, heatmaps
+5. Visualization of the results - volcano plot, dotplot, heatmaps, glimma plots
 
 6. Enrichment and pathway analysis
 
@@ -82,21 +82,34 @@ phenodata <- phenodata %>%
   rename_with(~ gsub(" |:", ".", .x)) %>%
   mutate(description=gsub(" ", "_", description)) %>%
   mutate(description=gsub("overexpression", "oe", description)) 
+cat("The correct order has to be given! \n")
+
 
 gene_count_matrix <- gene_count_matrix[,rownames(phenodata)]
 
-cat("It might worth to exclude the genes that are not expressed in any of the samples. ")
+cat("Exclude the genes not expressed in any of the samples or lowly expressed in the whole dataset.")
 
 gene_count_matrix <- gene_count_matrix[rowSums(gene_count_matrix)>10,]
+
+
+cat("Although DeSeq2 only works with count (integer) data, pseudocounts from other software tools - salmon, rsem, kallisto - have functions to read in in the tximport package. ")
+
+cat("")
 
 dds <- DESeqDataSetFromMatrix(countData = gene_count_matrix,
                               colData = phenodata,
                               design = ~ description)
 
+cat("Keep an eye on the reference level!")
 
 dds <- DESeq(dds)
-ge_mat <- getVarianceStabilizedData(dds)
 
+vsd <- vst(dds)
+ge_mat <- assay(vsd)
+#rlog(dds)
+#counts(dds, normalized=TRUE)
+
+cat("technical replicates are easy to collapse, using collapseReplicates function. ")
 
 ```
 
@@ -125,7 +138,7 @@ cat("Since we see now how much the cell type and the patient affect gene express
 phenodata <- phenodata %>% 
   mutate(patient= gsub("(.*)_(empty_vector|MEOX2)_(rep[[:digit:]])", "\\1", title))
 
-
+cat("The variable of interest should be the last one. ")
 dds <- DESeqDataSetFromMatrix(countData = gene_count_matrix,
                               colData = phenodata,
                               design = ~ patient + description)
@@ -159,6 +172,16 @@ rownames(corr) <- dds$title
 
 corrplot(corr, col.lim = c(min(corr), max(corr)), is.corr = F, tl.col = "black", tl.cex = 0.7)
 
+# sample distances
+sampleDists <- dist(t(assay(vsd)))
+
+library("RColorBrewer")
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(vsd$description, vsd$source_name_ch1, sep="-")
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists, show_colnames = F)
 
 ```
 
@@ -207,7 +230,7 @@ gene_anno$ensembl <- mapIds(org.Hs.eg.db,
                             keytype="ENTREZID",
                             multiVals="first")
 
-cat("There are symbols which are missing and not unique. For the sake of simplicity, we can visual")
+cat("There are symbols which are missing and not unique. For the sake of simplicity, we can visualize.")
 
 ```
 
@@ -259,7 +282,7 @@ phenodata <- phenodata %>%
   rename(group=description)
 
 glMDPlot(
-x=valid_res, yval="log2FoldChange", xval="log10padj",
+y=valid_res, xval="log2FoldChange", yval="log10padj",
 counts = ge_mat_combat[rownames(valid_res),],
 anno = gene_anno[rownames(valid_res),],
 groups = phenodata[,"group"],
@@ -297,6 +320,16 @@ transform = 'none'
 edo <- enrichDGN(rownames(valid_res[valid_res$padj<0.05,]), universe = rownames(valid_res))
 barplot(edo, showCategory=20)
 
+ego <- enrichGO(gene          = rownames(valid_res[valid_res$padj<0.05,]),
+                universe      = rownames(valid_res),
+                OrgDb         = org.Hs.eg.db,
+                ont           = "CC",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+        readable      = TRUE)
+barplot(ego, showCategory=20,) 
+
 
 edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 p1 <- cnetplot(edox, foldChange=valid_res[valid_res$padj<0.05,"log2FoldChange"])
@@ -319,6 +352,7 @@ edo2 <- gseDO(geneList)
 p1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
 
 
+
 ```
 
 
@@ -326,6 +360,8 @@ p1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Descriptio
 ### GeneTonic
 
 ```{r, eval=F}
+library(pcaExplorer)
+library(GeneTonic)
 enr <- topGOtable(rownames(valid_res[valid_res$padj<0.05,] ), rownames(valid_res),
 ontology = "BP",
 mapping = "org.Hs.eg.db",
@@ -333,7 +369,10 @@ geneID = "entrez")
 DEresults$SYMBOL <- gene_anno$gene_name
 
 res_enrich <- shake_topGOtableResult(enr)
+#res_enrich_aggr <- get_aggrscores(res_enrich, res, an)
+pcaExplorer::get_annotation_orgdb()
 DEresults$SYMBOL <- gene_anno$gene_name
+colnames(gene_anno) <- c("gene_id", "gene_name")
 GeneTonic(dds = dds,
           res_de = DEresults,
           res_enrich = res_enrich,
@@ -349,7 +388,7 @@ GeneTonic(dds = dds,
 library("macrophage")
 data("gse", package = "macrophage")
 
-dds_macrophage <- DESeqDataSet(gse, design = ~line + condition)
+#dds_macrophage <- DESeqDataSet(gse, design = ~line + condition)
 
 ```
 
