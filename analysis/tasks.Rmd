@@ -1,0 +1,113 @@
+---
+title: "tasks"
+author: "Reka_Toth"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+ # html_notebook: default
+  workflowr::wflow_html:
+    toc: false
+    code_folding: "show"
+#output: workflowr::wflow_html:
+editor_options:
+  chunk_output_type: console
+---
+
+## Download data - it is done
+
+```{r, eval=FALSE}
+library(TCGAbiolinks)
+
+query <- GDCquery(
+  "TCGA-KICH",
+  data.type="Gene Expression Quantification",
+  experimental.strategy="RNA-Seq", 
+  data.category = "Transcriptome Profiling", 
+  workflow.type = "STAR - Counts"
+)
+
+GDCdownload(
+  query,
+  token.file,
+  method = "api",
+  directory = "GDCdata",
+  files.per.chunk = NULL
+)
+
+
+kihc_rna <- GDCprepare(
+  query,
+  save = TRUE,
+  "KIHC_RNA",
+  directory = "GDCdata",
+  summarizedExperiment = TRUE,
+  remove.files.prepared = FALSE,
+)
+
+```
+
+
+```{r}
+library(DESeq2)
+```
+
+# Exercises
+
+1. Read in the count data into a DESeq2 object, using sample_type in the design matrix. 
+
+```{r}
+kihc <- readRDS("data/KIHC_RNA.RDS")
+
+count_matrix <- assays(kihc)[["unstranded"]]
+
+clinical <- as.data.frame(colData(kihc))
+
+
+```
+
+2. Extract the vst transformed data and plot a PCA or an MDS plot, colored by sample type. 
+
+```{r}
+
+```
+
+3. Identify the differently expressed genes. 
+
+```{r}
+
+```
+
+
+4. Generate a heatmap using the genes that have a FC > |2| and an adjusted p value of <0.01. From Clinical data, use gender and ajcc_pathologic_stage.
+
+
+```{r}
+
+```
+
+5. Filter the original DeSeq object for having only women in the dataset and do the same analysis. Compare the two results and list the genes that are differently expressed only in women. 
+
+```{r}
+
+```
+
+6. Download the mutation data from GDC in a MAF format. 
+
+```{r}
+
+```
+
+
+7. Visualize the mutation data. 
+
+```{r}
+
+```
+
+
+8. check if there is any mutation in genes that are differently expressed. 
+
+```{r}
+
+```
+
+9. Generate the heatmap using only samples, where the tumor has TP53 mutation. Keep in mind the sample naming!

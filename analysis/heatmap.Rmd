@@ -1,0 +1,172 @@
+---
+title: "heatmap"
+author: "tkik"
+date: "2024-06-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r}
+```{r, results='asis'}
+cat("## Download an example dataset from GEO \n")
+# load counts table from GEO
+#urld <- "https://www.ncbi.nlm.nih.gov/geo/download/?format=file&type=rnaseq_counts"
+#path <- paste(urld, "acc=GSE181144", "file=GSE181144_raw_counts_GRCh38.p13_NCBI.tsv.gz", sep="&");
+#tbl <- as.matrix(data.table::fread(path, header=T, colClasses="integer"), rownames=1)
+
+#write.table(tbl, file="data/count_data.txt", sep="\t",  row.names = T, col.names=T, quote = F)
+
+# clear the sample annotation 
+data <- getGEO('GSE181144')
+metadata <-  data$GSE181144_series_matrix.txt.gz@phenoData@data
+phenodata <- metadata[,c("title", "geo_accession", "source_name_ch1", "cell type:ch1", "tissue:ch1", "treatment:ch1", "description", "characteristics_ch1")]
+
+
+gene_count_matrix <- read.table("data/count_data.txt", header = T, row.names=1)
+
+cat("Filtering the dataset, so only two groups are included - for the sake of simplicity. \n")
+
+phenodata <- phenodata %>%
+  filter(grepl("overexpression", description))  %>%
+  rename_with(~ gsub(" |:", ".", .x)) %>%
+  mutate(description=gsub(" ", "_", description)) %>%
+  mutate(description=gsub("overexpression", "oe", description)) 
+cat("The correct order has to be given! \n")
+
+
+gene_count_matrix <- gene_count_matrix[,rownames(phenodata)]
+
+cat("Exclude the genes not expressed in any of the samples or lowly expressed in the whole dataset.")
+
+gene_count_matrix <- gene_count_matrix[rowSums(gene_count_matrix)>10,]
+
+
+cat("Although DeSeq2 only works with count (integer) data, pseudocounts from other software tools - salmon, rsem, kallisto - have functions to read in in the tximport package. ")
+
+cat("")
+
+dds <- DESeqDataSetFromMatrix(countData = gene_count_matrix,
+                              colData = phenodata,
+                              design = ~ description)
+
+cat("Keep an eye on the reference level!")
+
+dds <- DESeq(dds)
+
+vsd <- vst(dds)
+ge_mat <- assay(vsd)
+#rlog(dds)
+#counts(dds, normalized=TRUE)
+
+cat("technical replicates are easy to collapse, using collapseReplicates function. ")
+
+```
+
+
+## Pretty heatmap
+
+```{r}
+
+library(pheatmap)
+set.seed(235)
+ge_mat <- ge_mat[sample(1:nrow(ge_mat), 5000),]
+
+pheatmap(ge_mat)
+
+```
+
+```{r}
+
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row")
+annotation <- as.data.frame(colData(dds))
+
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", cluster_rows = F)
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", cluster_cols = F)
+
+
+```
+
+```{r}
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", clustering_distance_rows = "correlation")
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", clustering_distance_rows = "manhattan")
+
+```
+
+
+```{r}
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", annotation_col= annotation[,c("source_name_ch1", "tissue.ch1", "treatment.ch1")])
+
+
+```
+
+```{r}
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", annotation_col= annotation[,c("source_name_ch1", "tissue.ch1", "treatment.ch1")])
+
+```
+
+```{r}
+Cellpaper <- c("#313695","#4575b4", "#74add1", "#abd9e9","#e0f3f8","#ffffbf","#fee090","#fdae61","#f46d43","#d73027","#a50026")
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", annotation_col= annotation[,c("source_name_ch1", "tissue.ch1", "treatment.ch1")], color = Cellpaper)
+
+
+```
+
+
+```{r}
+
+ann_colors = list(
+    source_name_ch1 = c("Astrocytes"= "white",  "Glioblastoma" = "firebrick"),
+    treatment.ch1 = c("empty vector" = "#1B9E77", "MEOX2 overexpression" = "#D95F02")
+)
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", annotation_col= annotation[,c("source_name_ch1", "tissue.ch1", "treatment.ch1")], color = Cellpaper, annotation_colors = ann_colors)
+
+
+
+```
+
+
+```{r}
+
+
+pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", annotation_col= annotation[,c("source_name_ch1", "tissue.ch1", "treatment.ch1")], color = Cellpaper, annotation_colors = ann_colors, cutree_cols = 3, cutree_rows = 2, filename = "output/pheatmap.pdf")
+
+```
+
+
+```{r}
+pp <- pheatmap(ge_mat, show_rownames = F, show_colnames = F, scale = "row", annotation_col= annotation[,c("source_name_ch1", "tissue.ch1", "treatment.ch1")], color = Cellpaper, annotation_colors = ann_colors, cutree_cols = 3, cutree_rows = 2, filename = "output/pheatmap.pdf")
+
+```
+
+```{r}
+library(ComplexHeatmap)
+
+ha1 <- HeatmapAnnotation("Cell type" = annotation$source_name_ch1,
+                              "Tissue type" = annotation$tissue.ch1,
+                          sizeFactor = anno_lines(annotation$sizeFactor),
+                           "Treatment" = annotation$treatment.ch1,
+                              col = list("Cell type"= c(Astrocytes = "#E89242FF", Glioblastoma = "#24325FFF"), 
+                                         "Tissue type"=c(brain = "#B7E4F9FF"), 
+                                         "Treatment"=c("empty vector" = "#e84118", "MEOX2 overexpression" = "#4cd137")), 
+                          annotation_name_gp = gpar(col="white"))
+
+
+
+ ht1 <- Heatmap(t(scale(t(ge_mat))), name = "Gene expression", cluster_rows = TRUE,   
+               show_row_names = F, 
+               top_annotation = ha1, show_column_names = F,
+               heatmap_legend_param = list(title = "gene expression", at = seq(-3, 3, 1), 
+                                           direction = "horizontal"),
+               col = Cellpaper)
+
+```
+
