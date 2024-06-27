@@ -19,7 +19,9 @@ library(ggplot2)
 library(DESeq2)
 library(clusterProfiler)
 library(ChIPseeker)
+library(regioneR)
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+
 
 ```
 
@@ -57,7 +59,7 @@ ggplot(aes(x = log2FoldChange, y = -log10(padj))) +
     )) + theme(legend.position = "none", text = element_text(size = 12))  +
     geom_vline(xintercept = c(-0.2, 0.2), linetype = "longdash") +
     geom_hline(yintercept = c(-log10(0.05)), linetype = "longdash") + labs(x =
-                                                                             "Mean difference", y = "-log10(FDR p)", title = "Differential ATAC")
+                                                                             "Fold change", y = "-log10(FDR p)", title = "Differential ATAC")
   
 ```
 
@@ -67,19 +69,28 @@ ATAC_anno_up <- annotatePeak(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 &
 
 ATAC_anno_down <- annotatePeak(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange<0], TxDb =  TxDb.Mmusculus.UCSC.mm10.knownGene)
 
+library(regioneR)
+rand_regions <- regioneR::randomizeRegions(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange>0], genome = "mm10", allow.overlaps = F, per.chromosome = T)
+
+
+ATAC_anno_rand <- annotatePeak(rand_regions, TxDb =  TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+
 ```
 
 
 ```{r}
-plotAnnoBar(list(ATAC_anno_up, ATAC_anno_down))
+plotAnnoBar(list("UP"=ATAC_anno_up, "DOWN"=ATAC_anno_down, "RAND"=ATAC_anno_rand))
 
 ```
 
 ```{r}
 
-print(plotDistToTSS(list(ATAC_anno_up, ATAC_anno_down),
+print(plotDistToTSS(list(ATAC_anno_up, ATAC_anno_down, ATAC_anno_rand),
               title="Distribution of differential peaks \nrelative to TSS"))
 
+
+genes <- ATAC_anno_down@anno$geneId
 ```
 
 
@@ -114,10 +125,26 @@ builtin_annotations()
 
 annots_gr = build_annotations(genome = 'mm10', annotations = "mm10_enhancers_fantom")
 
-res = great(annots_gr , "GO:BP", "TxDb.Mmusculus.UCSC.mm10.knownGene", verbose = T, mode = "oneClosest")
+enh_down <- annotatr::annotate_regions(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange<0],annotations = annots_gr )
+
+res = great(enh_down , "GO:BP", "TxDb.Mmusculus.UCSC.mm10.knownGene", verbose = T, mode = "oneClosest")
 getRegionGeneAssociations(res)
 
 great_ResultTable = getEnrichmentTables(res)
 
 ```
+
+```{r}
+
+library(annotatr)
+builtin_annotations()
+
+annots_gr = build_annotations(genome = 'mm10', annotations = "mm10_basicgenes")
+
+genes_down <- annotatr::annotate_regions(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange<0],annotations = annots_gr )
+
+
+
+```
+
 
