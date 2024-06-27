@@ -1,0 +1,123 @@
+---
+title: "Region-based assays"
+author: "Reka Toth"
+date: "2024-06-26"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(DESeq2)
+library(clusterProfiler)
+library(ChIPseeker)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+```
+
+```{r}
+
+load("data/ATAC_coumts")
+```
+
+```{r}
+ATAC <- DESeq(ATAC)
+atac_Rlog <- rlog(ATAC)
+plotPCA(atac_Rlog, intgroup = "Group", ntop = nrow(atac_Rlog))
+```
+
+
+```{r}
+LiverMinusHindbrain <- results(ATAC, c("Group", "Liver", "Hindbrain"), format = "GRanges")
+
+```
+
+
+# Volcano plot 
+
+```{r}
+
+LiverMinusHindbrain %>%
+  mcols() %>%
+  as.data.frame() %>%
+  mutate(status=ifelse(padj<0.05, ifelse(log2FoldChange<0, "Decrease", "Increase"), "not altered")) %>%
+ggplot(aes(x = log2FoldChange, y = -log10(padj))) +
+    geom_point(aes(fill = status, color = status)) + theme_bw() + scale_color_manual(values = c(
+      "Decrease" = alpha("blue", 0.6),
+      "Increase" = alpha("red", 0.6),
+      "not altered" = alpha("black", 0.5)
+    )) + theme(legend.position = "none", text = element_text(size = 12))  +
+    geom_vline(xintercept = c(-0.2, 0.2), linetype = "longdash") +
+    geom_hline(yintercept = c(-log10(0.05)), linetype = "longdash") + labs(x =
+                                                                             "Mean difference", y = "-log10(FDR p)", title = "Differential ATAC")
+  
+```
+
+
+```{r}
+ATAC_anno_up <- annotatePeak(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange>0], TxDb =  TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+ATAC_anno_down <- annotatePeak(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange<0], TxDb =  TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+```
+
+
+```{r}
+plotAnnoBar(list(ATAC_anno_up, ATAC_anno_down))
+
+```
+
+```{r}
+
+print(plotDistToTSS(list(ATAC_anno_up, ATAC_anno_down),
+              title="Distribution of differential peaks \nrelative to TSS"))
+
+```
+
+
+```{r}
+library(rGREAT)
+library(ChIPseeker)
+seqlevelsStyle(LiverMinusHindbrain) <- "UCSC"
+
+great_Job <- submitGreatJob(LiverMinusHindbrain[LiverMinusHindbrain$padj<0.05 & LiverMinusHindbrain$log2FoldChange>0], species = "mm10")
+availableCategories(great_Job)
+
+great_ResultTable = getEnrichmentTables(great_Job, category = "GO")
+
+
+```
+
+```{r}
+
+library(org.Mm.eg.db)
+
+comppthw <- compareCluster(geneCluster   = ATAC_anno_down@anno$geneId,
+                         fun           = "enrichGO",
+                         pvalueCutoff  = 0.05,
+                         pAdjustMethod = "BH", 
+                         OrgDb='org.Mm.eg.db')
+```
+
+```{r}
+
+library(annotatr)
+builtin_annotations()
+
+annots_gr = build_annotations(genome = 'mm10', annotations = "mm10_enhancers_fantom")
+
+res = great(annots_gr , "GO:BP", "TxDb.Mmusculus.UCSC.mm10.knownGene", verbose = T, mode = "oneClosest")
+getRegionGeneAssociations(res)
+
+great_ResultTable = getEnrichmentTables(res)
+
+```
+
