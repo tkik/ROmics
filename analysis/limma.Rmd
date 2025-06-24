@@ -1,0 +1,134 @@
+---
+title: "RNASeq data analysis "
+author: "Reka_Toth"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+ # html_notebook: default
+  workflowr::wflow_html:
+    toc: false
+    code_folding: "show"
+#output: workflowr::wflow_html:
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(GEOquery)
+library(limma)
+
+library(dplyr)
+library(edgeR)
+
+```
+
+
+```{r}
+# clear the sample annotation 
+data <- getGEO('GSE181144')
+metadata <-  data$GSE181144_series_matrix.txt.gz@phenoData@data
+phenodata <- metadata[,c("title", "geo_accession", "source_name_ch1", "cell type:ch1", "tissue:ch1", "treatment:ch1", "description", "characteristics_ch1")]
+
+
+gene_count_matrix <- read.table("data/count_data.txt", header = T, row.names=1)
+
+cat("Filtering the dataset, so only two groups are included - for the sake of simplicity. \n")
+
+phenodata <- phenodata %>%
+  filter(grepl("overexpression", description))  %>%
+  rename_with(~ gsub(" |:", ".", .x)) %>%
+  mutate(description=gsub(" ", "_", description)) %>%
+  mutate(description=gsub("overexpression", "oe", description)) 
+cat("The correct order has to be given! \n")
+
+
+gene_count_matrix <- gene_count_matrix[,rownames(phenodata)]
+
+```
+## Read data in 
+
+Using edgeR package to read the data and process it. 
+
+```{r}
+dge <- DGEList(counts=gene_count_matrix)
+
+design <- model.matrix(data=phenodata, ~ description)
+
+dge <- calcNormFactors(dge)
+
+keep <- filterByExpr(dge, design)
+dge <- dge[keep,,keep.lib.sizes=FALSE]
+
+
+```
+
+```{r}
+
+v <- voom(dge, design, plot=TRUE)
+
+
+```
+
+## voomLmFit
+
+
+```{r}
+
+
+vfit2 <- voomLmFit(dge, design=design, sample.weights=TRUE)
+vfit2 <- eBayes(vfit2)
+topTable(vfit2, coef=2, sort.by="P")
+
+
+```
+
+## Multiple groups
+
+```{r}
+
+phenodata <- phenodata %>% 
+  mutate(patient= gsub("(.*)_(empty_vector|MEOX2)_(rep[[:digit:]])", "\\1", title))
+
+design <- model.matrix(data=phenodata, ~ 0+patient)
+vfit2 <- voomLmFit(dge, design=design, sample.weights=FALSE)
+
+contr <- makeContrasts(patientL0125 - patientL0512, levels = colnames(coef(vfit2)))
+
+
+tmp <- contrasts.fit(vfit2, contr)
+tmp <- eBayes(tmp)
+
+top.table <- topTable(tmp, sort.by = "P")
+
+
+```
+
+## Adjustment for confounding factor 
+
+```{r}
+
+design <- model.matrix(data=phenodata, ~0+patient + description) 
+vfit2 <- voomLmFit(dge, design=design, sample.weights=TRUE)
+vfit2 <- eBayes(vfit2)
+tt <- topTable(vfit2, coef=2, sort.by="P")
+dt <- decideTests(vfit2)
+
+```
+
+```{r}
+
+
+cpm <- cpm(dge)
+lcpm <- cpm(dge, log=TRUE)
+
+glMDPlot(vfit2, coef=1, status=dt, main=colnames(c)[vfit2],
+         side.main="ENTREZID", counts=lcpm, groups=phenodata$group, launch=FALSE)
+
+
+```
+
+
+
